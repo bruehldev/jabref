@@ -25,17 +25,31 @@ import net.sf.jabref.logic.util.OS;
 import net.sf.jabref.model.entry.InternalBibtexFields;
 import net.sf.jabref.preferences.JabRefPreferences;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * JabRef MainClass
  */
-public class JabRefMain {
+public class JabRefMain extends Application {
+
     private static final Log LOGGER = LogFactory.getLog(JabRefMain.class);
 
+    private static String[] arguments;
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> start(args));
+        arguments = args;
+        launch(arguments);
+    }
+
+    @Override
+    public void start(Stage mainStage) throws Exception {
+        Platform.setImplicitExit(false);
+        SwingUtilities.invokeLater(() -> start(arguments));
     }
 
     private static void start(String[] args) {

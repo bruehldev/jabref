@@ -1,5 +1,11 @@
 package net.sf.jabref.gui;
 
+import com.jgoodies.looks.HeaderStyle;
+import com.jgoodies.looks.Options;
+import javafx.application.Platform;
+
+import net.sf.jabref.*;
+import net.sf.jabref.exporter.*;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -1732,6 +1738,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         @Override
         public void actionPerformed(ActionEvent e) {
             quit();
+            Platform.exit();
         }
     }
 
