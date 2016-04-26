@@ -17,11 +17,11 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Made it possible to download multiple entries in one action
 
 ### Fixed
-- Fixed NullPointerException when opening search result window for an untitled database 
+- Fixed NullPointerException when opening search result window for an untitled database
 - Fixed #1757: Crash after saving illegal argument in entry editor
 
 ### Removed
-- The non-supported feature of being able to define file directories for any extension is removed. Still, it should work for older databases using the legacy `ps` and `pdf` fields, although we strongly encourage using the `file` field. 
+- The non-supported feature of being able to define file directories for any extension is removed. Still, it should work for older databases using the legacy `ps` and `pdf` fields, although we strongly encourage using the `file` field.
 
 
 
@@ -235,6 +235,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Added support for several Biblatex-fields through drop-down lists with valid alternatives
 - Added integrity checker for an odd number of unescaped '#'
 - Implemented [feature request 384](https://sourceforge.net/p/jabref/features/384): The merge entries dialog now show all text and colored differences between the fields
+- Partly switched to new UI technology (JavaFX). Redesigned about dialog.
 - Implemented [#1233](https://github.com/JabRef/jabref/issues/1233): Group side pane now takes up all the remaining space
 - Added integrity check detecting HTML-encoded characters
 - Added missing help files
@@ -246,7 +247,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Added \SOFTWARE\Jabref 'Path' registry entry for installation path inside the installer
 - Added an additional icon to distinguish DOI and URL links ([feature request #696](https://github.com/JabRef/jabref/issues/696))
 - Added nbib fields to Medlineplain importer and to MedlineImporter
-- Implemented [#1342](https://github.com/JabRef/jabref/issues/1342): show description of case converters as tooltip 
+- Implemented [#1342](https://github.com/JabRef/jabref/issues/1342): show description of case converters as tooltip
 - Updated German translation
 
 ### Fixed
@@ -255,8 +256,8 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Fixed [#1234](https://github.com/JabRef/jabref/issues/1234): NPE when getting information from retrieved DOI
 - Fixed [#1245](https://github.com/JabRef/jabref/issues/1245): Empty jstyle properties can now be specified as ""
 - Fixed [#1259](https://github.com/JabRef/jabref/issues/1259): NPE when sorting tabs
-- Fixed display bug in the cleanup dialog: field formatters are now correctly displayed using their name 
-- Fixed [#1271](https://github.com/JabRef/jabref/issues/1271): Authors with compound first names are displayed properly 
+- Fixed display bug in the cleanup dialog: field formatters are now correctly displayed using their name
+- Fixed [#1271](https://github.com/JabRef/jabref/issues/1271): Authors with compound first names are displayed properly
 - Fixed: Selecting invalid jstyle causes NPE and prevents opening of style selection dialog
 - Fixed: Move linked files to default directory works again
 - Fixed [#1327](https://github.com/JabRef/jabref/issues/1327): PDF cleanup changes order of linked pdfs

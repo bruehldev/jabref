@@ -6,19 +6,18 @@ import javax.swing.Action;
 import javax.swing.Icon;
 
 import net.sf.jabref.gui.actions.MnemonicAwareAction;
+import javafx.application.Platform;
 
 public class AboutAction extends MnemonicAwareAction {
-    private final AboutDialog dialog;
 
-    public AboutAction(String title, AboutDialog dialog, String tooltip, Icon iconFile) {
+    public AboutAction(String title, String tooltip, Icon iconFile) {
         super(iconFile);
         putValue(Action.NAME, title);
         putValue(Action.SHORT_DESCRIPTION, tooltip);
-        this.dialog = dialog;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        dialog.setVisible(true);
+        Platform.runLater(() -> new AboutDialogView().show());
     }
 }

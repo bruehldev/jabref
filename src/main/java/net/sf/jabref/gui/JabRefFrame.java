@@ -89,7 +89,6 @@ import net.sf.jabref.gui.exporter.SaveDatabaseAction;
 import net.sf.jabref.gui.groups.EntryTableTransferHandler;
 import net.sf.jabref.gui.groups.GroupSelector;
 import net.sf.jabref.gui.help.AboutAction;
-import net.sf.jabref.gui.help.AboutDialog;
 import net.sf.jabref.gui.help.HelpAction;
 import net.sf.jabref.gui.importer.ImportCustomizationDialog;
 import net.sf.jabref.gui.importer.ImportFormats;
@@ -187,8 +186,6 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
 
     private final FileHistoryMenu fileHistory = new FileHistoryMenu(prefs, this);
 
-    // The help window.
-    private final AboutDialog aboutDiag = new AboutDialog(this);
 
     // Here we instantiate menu/toolbar actions. Actions regarding
     // the currently open database are defined as a GeneralAction
@@ -212,6 +209,12 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
     private final AbstractAction newBiblatexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBLATEX);
     private final AbstractAction openSharedDatabaseAction = new OpenSharedDatabaseAction(this);
     private final AbstractAction newSubDatabaseAction = new NewSubDatabaseAction(this);
+    private final AbstractAction forkMeOnGitHubAction = new ForkMeOnGitHubAction();
+    private final AbstractAction donationAction = new DonateAction();
+    private final AbstractAction help = new HelpAction(Localization.menuTitle("JabRef help"), Localization.lang("JabRef help"),
+            HelpFiles.helpContents, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
+    private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), Localization.lang("About JabRef"),
+            IconTheme.getImage("about"));
     private final AbstractAction jabrefWebPageAction = new OpenBrowserAction("https://jabref.org",
             Localization.menuTitle("Website"), Localization.lang("Opens JabRef's website"),
             IconTheme.getImage("about"), IconTheme.getImage("about"));
