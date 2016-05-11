@@ -40,7 +40,6 @@ import net.sf.jabref.gui.keyboard.KeyBindingPreferences;
  * pane through the inherited {@link setDialogPane(DialogPane)} method in the constructor.
  * The layout of the pane should be define in an external fxml file and loaded it via the
  * {@link FXMLLoader}.
- *
  */
 public class FXAlert extends Alert {
 
@@ -48,7 +47,6 @@ public class FXAlert extends Alert {
      * The WindowAdapter will be added to all swing windows once an instance
      * of this class is shown and redirects the focus towards this instance.
      * It will be removed once the instance of this class gets hidden.
-     *
      */
     private final WindowAdapter fxOverSwingHelper = new WindowAdapter() {
 
@@ -70,7 +68,6 @@ public class FXAlert extends Alert {
             });
         }
     };
-
 
     public FXAlert(AlertType type, String title, Image image) {
         this(type, title);

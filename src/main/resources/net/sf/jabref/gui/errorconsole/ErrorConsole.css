@@ -1,0 +1,12 @@
+.info-sections {
+	-fx-padding: 5px;
+}
+
+.custom-buttons {
+	-fx-padding: 5px;
+}
+
+.dialog-pane *.button-bar {
+	-fx-max-height: 0;
+	-fx-pref-height: 0;
+}
