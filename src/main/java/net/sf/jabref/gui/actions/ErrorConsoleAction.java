@@ -37,7 +37,7 @@ import javafx.application.Platform;
 public class ErrorConsoleAction extends AbstractAction {
 
     public ErrorConsoleAction(StreamEavesdropper streamEavesdropper, Cache cache) {
-        super(Localization.menuTitle("Show error console"));
+        super(Localization.menuTitle("Show developer information"));
         putValue(Action.SHORT_DESCRIPTION, Localization.lang("Display all error messages"));
     }
 

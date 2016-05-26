@@ -41,7 +41,7 @@
                     </BorderPane.margin>
                     <buttons>
                         <Button fx:id="closeButton" cancelButton="true" defaultButton="true" mnemonicParsing="false"
-                                onAction="#closeAboutDialog" text="Ok" textAlignment="CENTER"/>
+                                onAction="#closeErrorDialog" text="Ok" textAlignment="CENTER"/>
                     </buttons>
                 </ButtonBar>
             </bottom>

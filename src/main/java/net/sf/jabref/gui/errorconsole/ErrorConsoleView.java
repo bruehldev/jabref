@@ -16,7 +16,7 @@ public class ErrorConsoleView extends FXMLView {
     }
 
     public void show() {
-        FXAlert errorConsole = new FXAlert(AlertType.ERROR, Localization.lang("Program output"));
+        FXAlert errorConsole = new FXAlert(AlertType.ERROR, Localization.lang("Developer information"));
 
         // create extra Error-Icon for Dialogpane in JavaFX
         Label img = new Label();
