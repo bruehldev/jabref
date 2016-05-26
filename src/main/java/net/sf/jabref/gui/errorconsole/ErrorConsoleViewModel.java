@@ -1,3 +1,18 @@
+/*  Copyright (C) 2016 JabRef contributors.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
 package net.sf.jabref.gui.errorconsole;
 
 import java.util.Random;
@@ -18,12 +33,25 @@ public class ErrorConsoleViewModel {
     private static final long REFRESH_RATE = 1000;
 
     private Thread refreshThread = new Thread(() -> {
+        boolean injectedCloseButton = false;
         try {
             while (true) {
-                refreshGUI();
                 Thread.sleep(REFRESH_RATE);
+
+                // IMO this is a really, really bad way to do this, but a saw no other way since the stage is
+                // initialized after the initialize()-Method and the closeErrorDialog() (more closely this thread)
+                // cannot be easily accessed from outside this ViewModel
+                // TODO find a better way
+                if (!injectedCloseButton){
+                    Stage stage = (Stage) this.closeButton.getScene().getWindow();
+                    stage.setOnCloseRequest(event -> closeErrorDialog());
+                    injectedCloseButton = true;
+                }
+                /////////////////////////////////////////////
+
+                refreshGUI();
             }
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException ignored) {}
     });
 
     private final ReadOnlyStringWrapper logTabTextArea = new ReadOnlyStringWrapper();
@@ -40,8 +68,7 @@ public class ErrorConsoleViewModel {
         outputTabTextArea.set(GuiAppender.CACHE.get());
 
         if (getExceptionTabTextArea().isEmpty()) {
-            exceptionTabTextArea.set(
-                    Localization.lang("No exceptions have occurred."));
+            exceptionTabTextArea.set(Localization.lang("No exceptions have occurred."));
         }
         refreshThread.start();
     }
@@ -79,8 +106,7 @@ public class ErrorConsoleViewModel {
         outputTabTextArea.set(GuiAppender.CACHE.get());
 
         if (getExceptionTabTextArea().isEmpty()) {
-            exceptionTabTextArea.set(
-                    Localization.lang("No exceptions have occurred."));
+            exceptionTabTextArea.set(Localization.lang("No exceptions have occurred."));
         }
     }
 
