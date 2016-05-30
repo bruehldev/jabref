@@ -44,14 +44,14 @@ public class StreamEavesdropper {
         this.systemErr = systemErr;
     }
 
-    public PrintStream getOutStream() {
+    public ObservablePrintStream getOutStream() {
         PrintStream consoleOut = new PrintStream(outByteStream);
-        return new TeeStream(consoleOut, systemOut);
+        return new ObservablePrintStream(consoleOut, systemOut);
     }
 
-    public PrintStream getErrStream() {
+    public ObservablePrintStream getErrStream() {
         PrintStream consoleErr = new PrintStream(errByteStream);
-        return new TeeStream(consoleErr, systemErr);
+        return new ObservablePrintStream(consoleErr, systemErr);
     }
 
     public String getErrorMessages() {

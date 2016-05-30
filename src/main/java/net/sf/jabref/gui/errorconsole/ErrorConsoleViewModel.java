@@ -15,14 +15,15 @@
 */
 package net.sf.jabref.gui.errorconsole;
 
-import java.util.Random;
-
 import net.sf.jabref.Globals;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.GuiAppender;
 
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -42,38 +43,55 @@ public class ErrorConsoleViewModel {
                 // initialized after the initialize()-Method and the closeErrorDialog() (more closely this thread)
                 // cannot be easily accessed from outside this ViewModel
                 // TODO find a better way
-                if (!injectedCloseButton){
+                if (!injectedCloseButton) {
                     Stage stage = (Stage) this.closeButton.getScene().getWindow();
                     stage.setOnCloseRequest(event -> closeErrorDialog());
                     injectedCloseButton = true;
                 }
                 /////////////////////////////////////////////
 
-                refreshGUI();
+                //refreshGUI();
             }
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
     });
 
-    private final ReadOnlyStringWrapper logTabTextArea = new ReadOnlyStringWrapper();
+    private final ListProperty<String> logTabTextArea = new SimpleListProperty<>();
     private final ReadOnlyStringWrapper exceptionTabTextArea = new ReadOnlyStringWrapper();
     private final ReadOnlyStringWrapper outputTabTextArea = new ReadOnlyStringWrapper();
+    ObservableList<String> observableList = Globals.streamEavesdropper.getOutStream().getStreamContent();
 
     @FXML
     private Button closeButton;
 
     @FXML
     private void initialize() {
-        logTabTextArea.set(Globals.streamEavesdropper.getOutput());
+        logTabTextArea.set(Globals.streamEavesdropper.getOutStream().getStreamContent());
         exceptionTabTextArea.set(Globals.streamEavesdropper.getErrorMessages());
         outputTabTextArea.set(GuiAppender.CACHE.get());
 
         if (getExceptionTabTextArea().isEmpty()) {
             exceptionTabTextArea.set(Localization.lang("No exceptions have occurred."));
         }
-        refreshThread.start();
+
+
+        //refreshThread.start();
+        /*observableList.addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                refreshGUI();
+            }
+        });
+        observableList.add(Globals.streamEavesdropper.getOutput());
+        observableList.add(Globals.streamEavesdropper.getErrorMessages());
+        observableList.add(GuiAppender.CACHE.get());
+        */
+
+        //refreshGUI();
+
     }
 
-    public ReadOnlyStringProperty logTabTextAreaProperty() {
+    public ListProperty<String> logTabTextAreaProperty() {
         return logTabTextArea;
     }
 
@@ -81,7 +99,7 @@ public class ErrorConsoleViewModel {
         return exceptionTabTextArea.get();
     }
 
-    public String getLogTabTextArea() {
+    public ObservableList<String> getLogTabTextArea() {
         return logTabTextArea.get();
     }
 
@@ -98,7 +116,7 @@ public class ErrorConsoleViewModel {
         return outputTabTextArea.get();
     }
 
-    public void refreshGUI() {
+    /*public void refreshGUI() {
         System.out.println(new Random().nextInt());  //TODO delete test dummy
 
         logTabTextArea.set(Globals.streamEavesdropper.getOutput());
@@ -108,12 +126,12 @@ public class ErrorConsoleViewModel {
         if (getExceptionTabTextArea().isEmpty()) {
             exceptionTabTextArea.set(Localization.lang("No exceptions have occurred."));
         }
-    }
+    }*/
 
     @FXML
     private void closeErrorDialog() {
         Stage stage = (Stage) closeButton.getScene().getWindow();
-        refreshThread.interrupt();
+        //refreshThread.interrupt();
         stage.close();
     }
 
