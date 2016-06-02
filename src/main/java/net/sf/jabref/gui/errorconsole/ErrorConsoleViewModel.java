@@ -16,7 +16,6 @@
 package net.sf.jabref.gui.errorconsole;
 
 import net.sf.jabref.Globals;
-import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.GuiAppender;
 
 import javafx.beans.property.ListProperty;
@@ -56,23 +55,19 @@ public class ErrorConsoleViewModel {
         }
     });
 
-    private final ListProperty<String> logTabTextArea = new SimpleListProperty<>();
-    private final ReadOnlyStringWrapper exceptionTabTextArea = new ReadOnlyStringWrapper();
-    private final ReadOnlyStringWrapper outputTabTextArea = new ReadOnlyStringWrapper();
-    ObservableList<String> observableList = Globals.streamEavesdropper.getOutStream().getStreamContent();
+    private final ReadOnlyStringWrapper logTabTextArea = new ReadOnlyStringWrapper();
+    private final ListProperty<String> exceptionTabTextArea = new SimpleListProperty<>();
+    private final ListProperty<String> outputTabTextArea = new SimpleListProperty<>();
 
     @FXML
     private Button closeButton;
 
     @FXML
     private void initialize() {
-        logTabTextArea.set(Globals.streamEavesdropper.getOutStream().getStreamContent());
-        exceptionTabTextArea.set(Globals.streamEavesdropper.getErrorMessages());
-        outputTabTextArea.set(GuiAppender.CACHE.get());
-
-        if (getExceptionTabTextArea().isEmpty()) {
-            exceptionTabTextArea.set(Localization.lang("No exceptions have occurred."));
-        }
+        logTabTextArea.set(GuiAppender.CACHE.get());
+        System.out.println(Globals.streamEavesdropper.getErrStream().getStreamContent());
+        exceptionTabTextArea.set(Globals.streamEavesdropper.getErrStream().getStreamContent());
+        outputTabTextArea.set(Globals.streamEavesdropper.getOutStream().getStreamContent());
 
 
         //refreshThread.start();
@@ -91,30 +86,31 @@ public class ErrorConsoleViewModel {
 
     }
 
-    public ListProperty<String> logTabTextAreaProperty() {
+    public ReadOnlyStringProperty logTabTextAreaProperty() {
         return logTabTextArea;
     }
 
-    public String getExceptionTabTextArea() {
-        return exceptionTabTextArea.get();
-    }
-
-    public ObservableList<String> getLogTabTextArea() {
+    public String getLogTabTextArea() {
         return logTabTextArea.get();
+
     }
 
-    public ReadOnlyStringProperty exceptionTabTextAreaProperty() {
+    public ListProperty<String> exceptionTabTextAreaProperty() {
         return exceptionTabTextArea;
     }
 
+    public ObservableList<String> getExceptionTabTextArea() {
+        return exceptionTabTextArea.get();
+    }
 
-    public ReadOnlyStringProperty outputTabTextAreaProperty() {
+    public ListProperty<String> outputTabTextAreaProperty() {
         return outputTabTextArea;
     }
 
-    public String getOutputTabTextArea() {
+    public ObservableList<String> getOutputTabTextArea() {
         return outputTabTextArea.get();
     }
+
 
     /*public void refreshGUI() {
         System.out.println(new Random().nextInt());  //TODO delete test dummy

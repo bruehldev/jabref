@@ -19,17 +19,17 @@
                     <tabs>
                         <Tab text="%Log">
                             <content>
-                                <ListView editable="false" items="${controller.logTabTextArea}"/>
+                                <TextArea editable="false" text="${controller.logTabTextArea}"/>
                             </content>
                         </Tab>
                         <Tab text="%Exceptions">
                             <content>
-                                <TextArea editable="false" text="${controller.exceptionTabTextArea}"/>
+                                <ListView editable="false" items="${controller.exceptionTabTextArea}"/>
                             </content>
                         </Tab>
                         <Tab text="%Output">
                             <content>
-                                <TextArea editable="false" text="${controller.outputTabTextArea}"/>
+                                <ListView editable="false" items="${controller.outputTabTextArea}"/>
                             </content>
                         </Tab>
                     </tabs>

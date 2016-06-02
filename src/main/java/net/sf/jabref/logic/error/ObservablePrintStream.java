@@ -14,10 +14,8 @@ public class ObservablePrintStream extends TeeStream {
         super(out1, out2);
 
     }
-
     @Override
     public void println(String s) {
-
         streamContent.add(s);
         super.println(s); //needed?
     }

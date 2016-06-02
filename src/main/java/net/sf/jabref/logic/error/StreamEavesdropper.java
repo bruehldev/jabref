@@ -28,6 +28,9 @@ public class StreamEavesdropper {
     private final ByteArrayOutputStream errByteStream = new ByteArrayOutputStream();
     private final ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
 
+    private ObservablePrintStream outStream = null;
+    private ObservablePrintStream errStream = null;
+
     private final PrintStream systemOut;
     private final PrintStream systemErr;
 
@@ -46,12 +49,21 @@ public class StreamEavesdropper {
 
     public ObservablePrintStream getOutStream() {
         PrintStream consoleOut = new PrintStream(outByteStream);
-        return new ObservablePrintStream(consoleOut, systemOut);
+        if (outStream == null) {
+            outStream = new ObservablePrintStream(consoleOut, systemOut);
+        }
+        return outStream;
     }
 
     public ObservablePrintStream getErrStream() {
         PrintStream consoleErr = new PrintStream(errByteStream);
-        return new ObservablePrintStream(consoleErr, systemErr);
+
+        if (errStream == null) {
+            errStream = new ObservablePrintStream(consoleErr, systemErr);
+        }
+        System.out.println(errByteStream.size());
+        return errStream;
+
     }
 
     public String getErrorMessages() {

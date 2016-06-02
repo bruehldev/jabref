@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 
 public class ErrorConsoleView extends FXMLView {
 
+
     public ErrorConsoleView() {
         super();
         bundle = Localization.getMessages();
@@ -45,5 +46,7 @@ public class ErrorConsoleView extends FXMLView {
 
         errorConsole.show();
         System.out.println("test");
+        throw new NullPointerException("error");
+
     }
 }
