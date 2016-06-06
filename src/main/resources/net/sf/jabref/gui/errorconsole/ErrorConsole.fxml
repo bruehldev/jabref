@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 <DialogPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="net.sf.jabref.gui.errorconsole.ErrorConsoleViewModel">
@@ -19,7 +18,7 @@
                     <tabs>
                         <Tab text="%Log">
                             <content>
-                                <TextArea editable="false" text="${controller.logTabTextArea}"/>
+                                <ListView editable="false" items="${controller.logTabTextArea}"/>
                             </content>
                         </Tab>
                         <Tab text="%Exceptions">
@@ -43,6 +42,7 @@
                     <buttons>
                         <Button fx:id="closeButton" cancelButton="true" defaultButton="true" mnemonicParsing="false"
                                 onAction="#closeErrorDialog" text="Ok" textAlignment="CENTER"/>
+                        <Button fx:id="testButton" mnemonicParsing="false" onAction="#testErrorDialog" text="Test"/>
                     </buttons>
                 </ButtonBar>
             </bottom>

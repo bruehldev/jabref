@@ -51,6 +51,7 @@ public class StreamEavesdropper {
         PrintStream consoleOut = new PrintStream(outByteStream);
         if (outStream == null) {
             outStream = new ObservablePrintStream(consoleOut, systemOut);
+            //System.setOut(outStream);
         }
         return outStream;
     }
@@ -61,7 +62,6 @@ public class StreamEavesdropper {
         if (errStream == null) {
             errStream = new ObservablePrintStream(consoleErr, systemErr);
         }
-        System.out.println(errByteStream.size());
         return errStream;
 
     }

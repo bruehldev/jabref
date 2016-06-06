@@ -14,10 +14,12 @@ public class ObservablePrintStream extends TeeStream {
         super(out1, out2);
 
     }
+
     @Override
-    public void println(String s) {
+    public void write(byte[] buf, int off, int len) {
+        super.write(buf, off, len);
+        String s = new String(buf, off, len);
         streamContent.add(s);
-        super.println(s); //needed?
     }
 
     public ObservableList<String> getStreamContent() {

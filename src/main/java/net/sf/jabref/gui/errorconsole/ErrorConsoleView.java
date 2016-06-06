@@ -45,8 +45,5 @@ public class ErrorConsoleView extends FXMLView {
         errorConsole.setResizable(true);
 
         errorConsole.show();
-        System.out.println("test");
-        throw new NullPointerException("error");
-
     }
 }

@@ -19,8 +19,6 @@ import net.sf.jabref.Globals;
 import net.sf.jabref.logic.logging.GuiAppender;
 
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,70 +27,27 @@ import javafx.stage.Stage;
 
 public class ErrorConsoleViewModel {
 
-    //maybe make it editable as a preference?
-    private static final long REFRESH_RATE = 1000;
-
-    private Thread refreshThread = new Thread(() -> {
-        boolean injectedCloseButton = false;
-        try {
-            while (true) {
-                Thread.sleep(REFRESH_RATE);
-
-                // IMO this is a really, really bad way to do this, but a saw no other way since the stage is
-                // initialized after the initialize()-Method and the closeErrorDialog() (more closely this thread)
-                // cannot be easily accessed from outside this ViewModel
-                // TODO find a better way
-                if (!injectedCloseButton) {
-                    Stage stage = (Stage) this.closeButton.getScene().getWindow();
-                    stage.setOnCloseRequest(event -> closeErrorDialog());
-                    injectedCloseButton = true;
-                }
-                /////////////////////////////////////////////
-
-                //refreshGUI();
-            }
-        } catch (InterruptedException ignored) {
-        }
-    });
-
-    private final ReadOnlyStringWrapper logTabTextArea = new ReadOnlyStringWrapper();
+    private final ListProperty<String> logTabTextArea = new SimpleListProperty<>();
     private final ListProperty<String> exceptionTabTextArea = new SimpleListProperty<>();
     private final ListProperty<String> outputTabTextArea = new SimpleListProperty<>();
 
     @FXML
     private Button closeButton;
+    private Button testButton;
 
     @FXML
     private void initialize() {
-        logTabTextArea.set(GuiAppender.CACHE.get());
-        System.out.println(Globals.streamEavesdropper.getErrStream().getStreamContent());
+        logTabTextArea.set(GuiAppender.CACHE.getCacheContent());
         exceptionTabTextArea.set(Globals.streamEavesdropper.getErrStream().getStreamContent());
         outputTabTextArea.set(Globals.streamEavesdropper.getOutStream().getStreamContent());
-
-
-        //refreshThread.start();
-        /*observableList.addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                refreshGUI();
-            }
-        });
-        observableList.add(Globals.streamEavesdropper.getOutput());
-        observableList.add(Globals.streamEavesdropper.getErrorMessages());
-        observableList.add(GuiAppender.CACHE.get());
-        */
-
-        //refreshGUI();
-
     }
 
-    public ReadOnlyStringProperty logTabTextAreaProperty() {
+    public ListProperty<String> logTabTextAreaProperty() {
         return logTabTextArea;
     }
 
-    public String getLogTabTextArea() {
+    public ObservableList<String> getLogTabTextArea() {
         return logTabTextArea.get();
-
     }
 
     public ListProperty<String> exceptionTabTextAreaProperty() {
@@ -111,18 +66,16 @@ public class ErrorConsoleViewModel {
         return outputTabTextArea.get();
     }
 
-
-    /*public void refreshGUI() {
-        System.out.println(new Random().nextInt());  //TODO delete test dummy
-
-        logTabTextArea.set(Globals.streamEavesdropper.getOutput());
-        exceptionTabTextArea.set(Globals.streamEavesdropper.getErrorMessages());
-        outputTabTextArea.set(GuiAppender.CACHE.get());
-
-        if (getExceptionTabTextArea().isEmpty()) {
-            exceptionTabTextArea.set(Localization.lang("No exceptions have occurred."));
+    @FXML
+    private void testErrorDialog() {
+        System.out.print("test");
+        try {
+            throw new Exception("error");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }*/
+        GuiAppender.CACHE.add("TEST CACHE");
+    }
 
     @FXML
     private void closeErrorDialog() {

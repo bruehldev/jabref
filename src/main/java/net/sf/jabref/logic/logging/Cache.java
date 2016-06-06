@@ -15,8 +15,12 @@
 */
 package net.sf.jabref.logic.logging;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Enables caching of messages
@@ -30,6 +34,8 @@ public class Cache {
     private String cache = "";
     private boolean cacheRefreshNeeded = true;
 
+    private ObservableList<String> cacheContent = FXCollections.observableList(new ArrayList());
+
     public Cache() {
         this(DEFAULT_CAPACITY);
     }
@@ -38,10 +44,10 @@ public class Cache {
         this.capacity = capacity;
     }
 
-    public synchronized String get() {
+   /* public synchronized String get() {
         ensureCacheIsFresh();
         return cache;
-    }
+    }*/
 
     private void ensureCacheIsFresh() {
         if (cacheRefreshNeeded) {
@@ -51,6 +57,7 @@ public class Cache {
 
     public synchronized void add(String message) {
         queue.add(message);
+        cacheContent.add(message);
 
         if (isCapacityExceeded()) {
             // if we reached capacity, we switch to the "real" caching method and remove old lines
@@ -74,4 +81,11 @@ public class Cache {
     private boolean isCapacityExceeded() {
         return queue.size() > capacity;
     }
+
+    public synchronized ObservableList<String> getCacheContent() {
+        ensureCacheIsFresh();
+        return cacheContent;
+    }
+
 }
+
