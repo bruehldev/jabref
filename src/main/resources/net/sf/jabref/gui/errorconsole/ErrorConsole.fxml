@@ -13,7 +13,7 @@
     <content>
         <BorderPane>
             <center>
-                <TabPane prefHeight="500.0" prefWidth="500.0" styleClass="info-sections" tabClosingPolicy="UNAVAILABLE"
+                <TabPane prefHeight="500.0" prefWidth="1200.0" styleClass="info-sections" tabClosingPolicy="UNAVAILABLE"
                          BorderPane.alignment="CENTER">
                     <tabs>
                         <Tab text="%Log">
@@ -28,7 +28,7 @@
                         </Tab>
                         <Tab text="%Output">
                             <content>
-                                <ListView editable="false" items="${controller.outputTabTextArea}"/>
+                                <ListView fx:id="output" editable="false" items="${controller.outputTabTextArea}"/>
                             </content>
                         </Tab>
                     </tabs>
@@ -42,7 +42,8 @@
                     <buttons>
                         <Button fx:id="closeButton" cancelButton="true" defaultButton="true" mnemonicParsing="false"
                                 onAction="#closeErrorDialog" text="Ok" textAlignment="CENTER"/>
-                        <Button fx:id="testButton" mnemonicParsing="false" onAction="#testErrorDialog" text="Test"/>
+                        <Button fx:id="copyLogButton" mnemonicParsing="false" onAction="#copyLogErrorDialog"
+                                text="Copy Log"/>
                     </buttons>
                 </ButtonBar>
             </bottom>

@@ -16,13 +16,17 @@
 package net.sf.jabref.gui.errorconsole;
 
 import net.sf.jabref.Globals;
-import net.sf.jabref.logic.logging.GuiAppender;
+import net.sf.jabref.JabRefGUI;
+import net.sf.jabref.gui.ClipBoardManager;
+import net.sf.jabref.logic.l10n.Localization;
+import net.sf.jabref.logic.logging.ObservableCache;
 
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 public class ErrorConsoleViewModel {
@@ -31,15 +35,60 @@ public class ErrorConsoleViewModel {
     private final ListProperty<String> exceptionTabTextArea = new SimpleListProperty<>();
     private final ListProperty<String> outputTabTextArea = new SimpleListProperty<>();
 
+    //private final ListProperty<String> allMessage = new SimpleListProperty<>(FXCollections.observableArrayList());
+
     @FXML
     private Button closeButton;
-    private Button testButton;
+    @FXML
+    private Button copyLogButton;
+    @FXML
+    private ListView<String> output;
 
     @FXML
     private void initialize() {
-        logTabTextArea.set(GuiAppender.CACHE.getCacheContent());
+        logTabTextArea.set(ObservableCache.INSTANCE.getCacheContent());
         exceptionTabTextArea.set(Globals.streamEavesdropper.getErrStream().getStreamContent());
         outputTabTextArea.set(Globals.streamEavesdropper.getOutStream().getStreamContent());
+
+      /*  ObservableCache.INSTANCE.getCacheContent().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                allMessage.addAll(c.getAddedSubList());
+            }
+        });
+
+        Globals.streamEavesdropper.getErrStream().getStreamContent().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                allMessage.addAll(c.getAddedSubList());
+            }
+        });
+
+        Globals.streamEavesdropper.getOutStream().getStreamContent().addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                allMessage.addAll(c.getAddedSubList());
+            }
+        });*/
+
+        // handler for listCell appearance (example for exception Cell)
+        /*output.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> listView) {
+                return new ListCell<String>() {
+                    @Override
+                    public void updateItem(String string, boolean empty) {
+                        super.updateItem(string, empty);
+                        if (string != null) {
+                            setText(string);
+                            if (string.startsWith("\t") || string.startsWith("java.lang.")) {
+                                getStyleClass().add("exception");
+                            }
+                        }
+                    }
+                };
+            }
+        });*/
     }
 
     public ListProperty<String> logTabTextAreaProperty() {
@@ -66,15 +115,24 @@ public class ErrorConsoleViewModel {
         return outputTabTextArea.get();
     }
 
+/*    public ListProperty<String> allMessageProperty() {
+        return allMessage;
+    }
+
+    public ObservableList<String> getAllMessage() {
+        return allMessage.get();
+    }*/
+
     @FXML
-    private void testErrorDialog() {
-        System.out.print("test");
-        try {
-            throw new Exception("error");
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void copyLogErrorDialog() {
+        String logContentCopy = "";
+        for (String message : logTabTextArea.get()) {
+            logContentCopy += message + System.lineSeparator();
         }
-        GuiAppender.CACHE.add("TEST CACHE");
+        new ClipBoardManager().setClipboardContents(logContentCopy);
+
+        JabRefGUI.getMainFrame().output(Localization.lang("Log is copied"));
+        // GuiAppender.CACHE.add("Test CACHE");
     }
 
     @FXML
