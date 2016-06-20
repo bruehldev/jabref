@@ -51,7 +51,7 @@ public class Cache {
 
     public synchronized void add(String message) {
         queue.add(message);
-        ObservableCache.INSTANCE.add(message.replaceAll(System.lineSeparator(), ""));
+        ObservableMessages.INSTANCE.add(message.replaceAll(System.lineSeparator(), ""));
 
 
         if (isCapacityExceeded()) {
@@ -78,5 +78,8 @@ public class Cache {
     }
 
 
+    public Queue<String> get() {
+        return queue;
+    }
 }
 

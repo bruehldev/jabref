@@ -28,8 +28,6 @@ public class StreamEavesdropper {
     private final ByteArrayOutputStream errByteStream = new ByteArrayOutputStream();
     private final ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
 
-    private ObservablePrintStream outStream = null;
-    private ObservablePrintStream errStream = null;
 
     private final PrintStream systemOut;
     private final PrintStream systemErr;
@@ -47,22 +45,14 @@ public class StreamEavesdropper {
         this.systemErr = systemErr;
     }
 
-    public ObservablePrintStream getOutStream() {
+    public TeeStream getOutStream() {
         PrintStream consoleOut = new PrintStream(outByteStream);
-        if (outStream == null) {
-            outStream = new ObservablePrintStream(consoleOut, systemOut);
-            //System.setOut(outStream);
-        }
-        return outStream;
+        return new TeeStream(consoleOut, systemOut);
     }
 
-    public ObservablePrintStream getErrStream() {
+    public TeeStream getErrStream() {
         PrintStream consoleErr = new PrintStream(errByteStream);
-
-        if (errStream == null) {
-            errStream = new ObservablePrintStream(consoleErr, systemErr);
-        }
-        return errStream;
+        return new TeeStream(consoleErr, systemErr);
 
     }
 

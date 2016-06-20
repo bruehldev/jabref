@@ -5,35 +5,12 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
-<DialogPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1"
+<DialogPane xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="net.sf.jabref.gui.errorconsole.ErrorConsoleViewModel">
     <content>
         <BorderPane>
-            <center>
-                <TabPane prefHeight="500.0" prefWidth="1200.0" styleClass="info-sections" tabClosingPolicy="UNAVAILABLE"
-                         BorderPane.alignment="CENTER">
-                    <tabs>
-                        <Tab text="%Log">
-                            <content>
-                                <ListView editable="false" items="${controller.logTabTextArea}"/>
-                            </content>
-                        </Tab>
-                        <Tab text="%Exceptions">
-                            <content>
-                                <ListView editable="false" items="${controller.exceptionTabTextArea}"/>
-                            </content>
-                        </Tab>
-                        <Tab text="%Output">
-                            <content>
-                                <ListView fx:id="output" editable="false" items="${controller.outputTabTextArea}"/>
-                            </content>
-                        </Tab>
-                    </tabs>
-                </TabPane>
-            </center>
             <bottom>
                 <ButtonBar styleClass="custom-buttons" BorderPane.alignment="CENTER">
                     <BorderPane.margin>
@@ -44,9 +21,15 @@
                                 onAction="#closeErrorDialog" text="Ok" textAlignment="CENTER"/>
                         <Button fx:id="copyLogButton" mnemonicParsing="false" onAction="#copyLogErrorDialog"
                                 text="Copy Log"/>
+                        <Button fx:id="testOutput" mnemonicParsing="false" onAction="#testOutputOnClicked" text="TEST"/>
+                        <ToggleButton fx:id="developerButton" mnemonicParsing="false" text="Developer information"/>
                     </buttons>
                 </ButtonBar>
             </bottom>
+            <center>
+                <ListView fx:id="allMessage" prefHeight="500.0" prefWidth="1200.0" styleClass="info-sections"
+                          BorderPane.alignment="CENTER"/>
+            </center>
         </BorderPane>
     </content>
 </DialogPane>

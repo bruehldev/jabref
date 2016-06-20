@@ -18,6 +18,8 @@ package net.sf.jabref.logic.error;
 
 import java.io.PrintStream;
 
+import net.sf.jabref.logic.logging.ObservableMessages;
+
 /**
  * All writes to this print stream are copied to two print streams
  * <p/>
@@ -37,6 +39,10 @@ public class TeeStream extends PrintStream {
         try {
             super.write(buf, off, len);
             outStream.write(buf, off, len);
+            String s = new String(buf, off, len);
+            if (!s.equals(System.lineSeparator())) {
+                ObservableMessages.INSTANCE.add(s.replaceAll(System.lineSeparator(), ""));
+            }
         } catch (Exception ignored) {
             // Ignored
         }

@@ -15,64 +15,52 @@
 */
 package net.sf.jabref.gui.errorconsole;
 
-import net.sf.jabref.Globals;
+import java.io.IOException;
+
 import net.sf.jabref.JabRefGUI;
 import net.sf.jabref.gui.ClipBoardManager;
 import net.sf.jabref.logic.l10n.Localization;
-import net.sf.jabref.logic.logging.ObservableCache;
+import net.sf.jabref.logic.logging.GuiAppender;
+import net.sf.jabref.logic.logging.ObservableMessages;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.ObservableList;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class ErrorConsoleViewModel {
-
-    private final ListProperty<String> logTabTextArea = new SimpleListProperty<>();
-    private final ListProperty<String> exceptionTabTextArea = new SimpleListProperty<>();
-    private final ListProperty<String> outputTabTextArea = new SimpleListProperty<>();
-
-    //private final ListProperty<String> allMessage = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     @FXML
     private Button closeButton;
     @FXML
     private Button copyLogButton;
     @FXML
-    private ListView<String> output;
+    private Button testOutput;
+    @FXML
+    private ToggleButton developerButton;
+    @FXML
+    private ListView<String> allMessage;
+
+    private BooleanProperty developerInformation = new SimpleBooleanProperty();
 
     @FXML
     private void initialize() {
-        logTabTextArea.set(ObservableCache.INSTANCE.getCacheContent());
-        exceptionTabTextArea.set(Globals.streamEavesdropper.getErrStream().getStreamContent());
-        outputTabTextArea.set(Globals.streamEavesdropper.getOutStream().getStreamContent());
 
-      /*  ObservableCache.INSTANCE.getCacheContent().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                allMessage.addAll(c.getAddedSubList());
-            }
-        });
+        ButtonBar.setButtonData(developerButton, ButtonBar.ButtonData.LEFT);
+        allMessage.itemsProperty().bind(ObservableMessages.INSTANCE.messagesPropety());
+        developerInformation.bind(developerButton.selectedProperty());
+        developerInformation.addListener((observable, oldValue, newValue) -> allMessage.refresh());
 
-        Globals.streamEavesdropper.getErrStream().getStreamContent().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                allMessage.addAll(c.getAddedSubList());
-            }
-        });
 
-        Globals.streamEavesdropper.getOutStream().getStreamContent().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(Change<? extends String> c) {
-                allMessage.addAll(c.getAddedSubList());
-            }
-        });*/
 
         // handler for listCell appearance (example for exception Cell)
-        /*output.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        allMessage.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
             public ListCell<String> call(ListView<String> listView) {
                 return new ListCell<String>() {
@@ -81,52 +69,44 @@ public class ErrorConsoleViewModel {
                         super.updateItem(string, empty);
                         if (string != null) {
                             setText(string);
-                            if (string.startsWith("\t") || string.startsWith("java.lang.")) {
-                                getStyleClass().add("exception");
+                            if (string.startsWith("\t") || string.startsWith("java.")) {
+                                getStyleClass().clear();
+                                if (developerInformation.getValue()) {
+                                    getStyleClass().add("exception-active");
+                                } else {
+                                    getStyleClass().add("exception-inactive");
+                                }
+                            } else if (string.substring(0, 2).matches("[0-9][0-9]")) {
+                                getStyleClass().clear();
+                                getStyleClass().add("log");
+                            } else {
+                                getStyleClass().clear();
+                                getStyleClass().add("output");
                             }
                         }
+                        allMessage.refresh();
                     }
                 };
             }
-        });*/
+        });
     }
 
-    public ListProperty<String> logTabTextAreaProperty() {
-        return logTabTextArea;
-    }
+    @FXML
+    private void testOutputOnClicked() {
+        GuiAppender.CACHE.add("Test CACHE");
+        System.out.println("TESTING");
+        try {
+            throw new IOException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    public ObservableList<String> getLogTabTextArea() {
-        return logTabTextArea.get();
     }
-
-    public ListProperty<String> exceptionTabTextAreaProperty() {
-        return exceptionTabTextArea;
-    }
-
-    public ObservableList<String> getExceptionTabTextArea() {
-        return exceptionTabTextArea.get();
-    }
-
-    public ListProperty<String> outputTabTextAreaProperty() {
-        return outputTabTextArea;
-    }
-
-    public ObservableList<String> getOutputTabTextArea() {
-        return outputTabTextArea.get();
-    }
-
-/*    public ListProperty<String> allMessageProperty() {
-        return allMessage;
-    }
-
-    public ObservableList<String> getAllMessage() {
-        return allMessage.get();
-    }*/
 
     @FXML
     private void copyLogErrorDialog() {
         String logContentCopy = "";
-        for (String message : logTabTextArea.get()) {
+        for (String message : GuiAppender.CACHE.get()) {
             logContentCopy += message + System.lineSeparator();
         }
         new ClipBoardManager().setClipboardContents(logContentCopy);

@@ -2,6 +2,22 @@
 	-fx-padding: 5px;
 }
 
+.exception-active {
+    -fx-text-fill: red;
+}
+
+.exception-inactive {
+    visibility: hidden;
+}
+
+.log {
+-fx-text-fill: blue;
+}
+
+.output {
+-fx-text-fill: black;
+}
+
 .custom-buttons {
 	-fx-padding: 5px;
 }
