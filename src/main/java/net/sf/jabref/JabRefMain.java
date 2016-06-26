@@ -5,6 +5,11 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+
+import net.sf.jabref.bibtex.InternalBibtexFields;
 import net.sf.jabref.cli.ArgumentProcessor;
 import net.sf.jabref.gui.remote.JabRefMessageHandler;
 import net.sf.jabref.logic.CustomEntryTypesManager;
@@ -24,10 +29,6 @@ import net.sf.jabref.logic.remote.client.RemoteListenerClient;
 import net.sf.jabref.logic.util.OS;
 import net.sf.jabref.model.entry.InternalBibtexFields;
 import net.sf.jabref.preferences.JabRefPreferences;
-
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
