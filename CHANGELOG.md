@@ -30,6 +30,7 @@ to [sourceforge feature requests](https://sourceforge.net/p/jabref/features/) by
 - Integrity check table can be sorted by clicking on column headings
 - Add tab which shows the MathSciNet review website if the `MRNumber` field is present.
 - Partly switched to new UI technology (JavaFX). Redesigned key bindings dialog.
+- Partly switched to new UI technology (JavaFX). Redesigned journal abbreviations dialog.
 
 ### Fixed
 - Fixed [#473](https://github.com/JabRef/jabref/issues/473): Values in an entry containing symbols like ' are now properly escaped for exporting to the database
