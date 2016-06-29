@@ -28,10 +28,20 @@ import net.sf.jabref.logic.logging.ObservableMessages;
 public class TeeStream extends PrintStream {
 
     private final PrintStream outStream;
+    private final int priority;
+
+    public TeeStream(PrintStream out1, PrintStream out2, int priority) {
+        super(out1);
+        this.outStream = out2;
+        this.priority = priority;
+
+    }
 
     public TeeStream(PrintStream out1, PrintStream out2) {
         super(out1);
         this.outStream = out2;
+        this.priority = 0;
+
     }
 
     @Override
@@ -41,7 +51,8 @@ public class TeeStream extends PrintStream {
             outStream.write(buf, off, len);
             String s = new String(buf, off, len);
             if (!s.equals(System.lineSeparator())) {
-                ObservableMessages.INSTANCE.add(s.replaceAll(System.lineSeparator(), ""));
+                ObservableMessageWithPriority messageWithPriority = new ObservableMessageWithPriority(s.replaceAll(System.lineSeparator(), ""), priority);
+                ObservableMessages.INSTANCE.add(messageWithPriority);
             }
         } catch (Exception ignored) {
             // Ignored

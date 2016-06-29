@@ -18,6 +18,8 @@ package net.sf.jabref.logic.logging;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
+
 /**
  * Enables caching of messages
  */
@@ -51,7 +53,8 @@ public class Cache {
 
     public synchronized void add(String message) {
         queue.add(message);
-        ObservableMessages.INSTANCE.add(message.replaceAll(System.lineSeparator(), ""));
+        ObservableMessageWithPriority messageWithPriority = new ObservableMessageWithPriority(message.replaceAll(System.lineSeparator(), ""), 0);
+        ObservableMessages.INSTANCE.add(messageWithPriority);
 
 
         if (isCapacityExceeded()) {

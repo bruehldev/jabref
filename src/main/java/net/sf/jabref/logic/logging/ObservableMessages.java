@@ -1,5 +1,7 @@
 package net.sf.jabref.logic.logging;
 
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
+
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -10,13 +12,13 @@ import javafx.collections.FXCollections;
 public enum ObservableMessages {
     INSTANCE;
 
-    private final ListProperty<String> messages = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ListProperty<ObservableMessageWithPriority> messages = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-    public ListProperty<String> messagesPropety() {
+    public ListProperty<ObservableMessageWithPriority> messagesPropety() {
         return messages;
     }
 
-    public void add(String s) {
+    public void add(ObservableMessageWithPriority s) {
         messages.add(s);
     }
 

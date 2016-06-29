@@ -16,15 +16,20 @@
 package net.sf.jabref.gui.errorconsole;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import net.sf.jabref.JabRefGUI;
 import net.sf.jabref.gui.ClipBoardManager;
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.GuiAppender;
 import net.sf.jabref.logic.logging.ObservableMessages;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -45,7 +50,7 @@ public class ErrorConsoleViewModel {
     @FXML
     private ToggleButton developerButton;
     @FXML
-    private ListView<String> allMessage;
+    private ListView<ObservableMessageWithPriority> allMessage;
 
     private BooleanProperty developerInformation = new SimpleBooleanProperty();
 
@@ -53,35 +58,46 @@ public class ErrorConsoleViewModel {
     private void initialize() {
 
         ButtonBar.setButtonData(developerButton, ButtonBar.ButtonData.LEFT);
-        allMessage.itemsProperty().bind(ObservableMessages.INSTANCE.messagesPropety());
+
+        ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
+        FilteredList<ObservableMessageWithPriority> filteredData = new FilteredList<>(masterData, p -> p.getPriority() == 0);
+        allMessage.setItems(filteredData);
+
         developerInformation.bind(developerButton.selectedProperty());
-        developerInformation.addListener((observable, oldValue, newValue) -> allMessage.refresh());
+        developerInformation.addListener((observable, oldValue, newValue) -> {
+            ObservableList<ObservableMessageWithPriority> emptyList = FXCollections.observableArrayList(Collections.EMPTY_LIST);
+            allMessage.setItems(emptyList);
+            allMessage.refresh();
+            if (newValue) {
+                FilteredList<ObservableMessageWithPriority> f = new FilteredList<>(masterData, p -> newValue);
+                allMessage.setItems(f);
 
-
+            } else {
+                FilteredList<ObservableMessageWithPriority> f = new FilteredList<>(masterData, p -> p.getPriority() == 0);
+                allMessage.setItems(f);
+            }
+            allMessage.refresh();
+        });
 
         // handler for listCell appearance (example for exception Cell)
-        allMessage.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        allMessage.setCellFactory(new Callback<ListView<ObservableMessageWithPriority>, ListCell<ObservableMessageWithPriority>>() {
             @Override
-            public ListCell<String> call(ListView<String> listView) {
-                return new ListCell<String>() {
+            public ListCell<ObservableMessageWithPriority> call(ListView<ObservableMessageWithPriority> listView) {
+                return new ListCell<ObservableMessageWithPriority>() {
                     @Override
-                    public void updateItem(String string, boolean empty) {
-                        super.updateItem(string, empty);
-                        if (string != null) {
-                            setText(string);
-                            if (string.startsWith("\t") || string.startsWith("java.")) {
-                                getStyleClass().clear();
+                    public void updateItem(ObservableMessageWithPriority om, boolean empty) {
+                        super.updateItem(om, empty);
+                        if (om != null) {
+                            setText(om.getMessage());
+                            getStyleClass().clear();
+                            if (om.getPriority() == 1) {
                                 if (developerInformation.getValue()) {
                                     getStyleClass().add("exception-active");
-                                } else {
-                                    getStyleClass().add("exception-inactive");
                                 }
-                            } else if (string.substring(0, 2).matches("[0-9][0-9]")) {
-                                getStyleClass().clear();
-                                getStyleClass().add("log");
-                            } else {
-                                getStyleClass().clear();
+                            } else if (om.getPriority() == 2) {
                                 getStyleClass().add("output");
+                            } else {
+                                getStyleClass().add("log");
                             }
                         }
                         allMessage.refresh();

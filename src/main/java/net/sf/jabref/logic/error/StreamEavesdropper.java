@@ -33,6 +33,11 @@ public class StreamEavesdropper {
     private final PrintStream systemErr;
 
 
+    public StreamEavesdropper(PrintStream systemOut, PrintStream systemErr) {
+        this.systemOut = systemOut;
+        this.systemErr = systemErr;
+    }
+
     public static StreamEavesdropper eavesdropOnSystem() {
         StreamEavesdropper streamEavesdropper = new StreamEavesdropper(System.out, System.err);
         System.setOut(streamEavesdropper.getOutStream());
@@ -40,19 +45,14 @@ public class StreamEavesdropper {
         return streamEavesdropper;
     }
 
-    public StreamEavesdropper(PrintStream systemOut, PrintStream systemErr) {
-        this.systemOut = systemOut;
-        this.systemErr = systemErr;
-    }
-
     public TeeStream getOutStream() {
         PrintStream consoleOut = new PrintStream(outByteStream);
-        return new TeeStream(consoleOut, systemOut);
+        return new TeeStream(consoleOut, systemOut, 2);
     }
 
     public TeeStream getErrStream() {
         PrintStream consoleErr = new PrintStream(errByteStream);
-        return new TeeStream(consoleErr, systemErr);
+        return new TeeStream(consoleErr, systemErr, 1);
 
     }
 
