@@ -47,12 +47,12 @@ public class StreamEavesdropper {
 
     public TeeStream getOutStream() {
         PrintStream consoleOut = new PrintStream(outByteStream);
-        return new TeeStream(consoleOut, systemOut, 2);
+        return new TeeStream(consoleOut, systemOut, MessagePriority.MEDIUM);
     }
 
     public TeeStream getErrStream() {
         PrintStream consoleErr = new PrintStream(errByteStream);
-        return new TeeStream(consoleErr, systemErr, 1);
+        return new TeeStream(consoleErr, systemErr, MessagePriority.HIGH);
 
     }
 

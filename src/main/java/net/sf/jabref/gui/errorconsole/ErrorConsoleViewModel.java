@@ -16,10 +16,10 @@
 package net.sf.jabref.gui.errorconsole;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import net.sf.jabref.JabRefGUI;
 import net.sf.jabref.gui.ClipBoardManager;
+import net.sf.jabref.logic.error.MessagePriority;
 import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.GuiAppender;
@@ -27,7 +27,6 @@ import net.sf.jabref.logic.logging.ObservableMessages;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -60,23 +59,23 @@ public class ErrorConsoleViewModel {
         ButtonBar.setButtonData(developerButton, ButtonBar.ButtonData.LEFT);
 
         ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
-        FilteredList<ObservableMessageWithPriority> filteredData = new FilteredList<>(masterData, p -> p.getPriority() == 0);
-        allMessage.setItems(filteredData);
+
+        /*
+        that is a ObservableList, which filter the showed message.
+        at first should it show only the Log Entries
+        HERE IT SHOWS NOW NOT CORRECTLY THE LIST ON LISTVIEW. NEED ONE TIPPS PLEASE !
+         */
+        FilteredList<ObservableMessageWithPriority> filteredList = new FilteredList<>(masterData, t -> !t.isFilteredProperty().get());
+        allMessage.setItems(filteredList);
 
         developerInformation.bind(developerButton.selectedProperty());
         developerInformation.addListener((observable, oldValue, newValue) -> {
-            ObservableList<ObservableMessageWithPriority> emptyList = FXCollections.observableArrayList(Collections.EMPTY_LIST);
-            allMessage.setItems(emptyList);
-            allMessage.refresh();
             if (newValue) {
-                FilteredList<ObservableMessageWithPriority> f = new FilteredList<>(masterData, p -> newValue);
-                allMessage.setItems(f);
+                masterData.forEach(message -> message.setIsFiltered(false));
 
             } else {
-                FilteredList<ObservableMessageWithPriority> f = new FilteredList<>(masterData, p -> p.getPriority() == 0);
-                allMessage.setItems(f);
+                masterData.forEach(message -> message.setIsFiltered(message.getPriority() != MessagePriority.LOW));
             }
-            allMessage.refresh();
         });
 
         // handler for listCell appearance (example for exception Cell)
@@ -90,23 +89,24 @@ public class ErrorConsoleViewModel {
                         if (om != null) {
                             setText(om.getMessage());
                             getStyleClass().clear();
-                            if (om.getPriority() == 1) {
+                            if (om.getPriority() == MessagePriority.HIGH) {
                                 if (developerInformation.getValue()) {
-                                    getStyleClass().add("exception-active");
+                                    getStyleClass().add("exception");
                                 }
-                            } else if (om.getPriority() == 2) {
+                            } else if (om.getPriority() == MessagePriority.MEDIUM) {
                                 getStyleClass().add("output");
                             } else {
                                 getStyleClass().add("log");
                             }
                         }
-                        allMessage.refresh();
+                        //allMessage.refresh();
                     }
                 };
             }
         });
     }
 
+    //  TEST BUTTON TO TEST THE ENTRIES
     @FXML
     private void testOutputOnClicked() {
         GuiAppender.CACHE.add("Test CACHE");
@@ -116,9 +116,11 @@ public class ErrorConsoleViewModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        allMessage.refresh();
 
     }
 
+    // Handler for copy of Log Entry in the List by click of Copy Log Button
     @FXML
     private void copyLogErrorDialog() {
         String logContentCopy = "";
@@ -126,15 +128,13 @@ public class ErrorConsoleViewModel {
             logContentCopy += message + System.lineSeparator();
         }
         new ClipBoardManager().setClipboardContents(logContentCopy);
-
         JabRefGUI.getMainFrame().output(Localization.lang("Log is copied"));
-        // GuiAppender.CACHE.add("Test CACHE");
     }
 
+    // Handler for close of error console
     @FXML
     private void closeErrorDialog() {
         Stage stage = (Stage) closeButton.getScene().getWindow();
-        //refreshThread.interrupt();
         stage.close();
     }
 

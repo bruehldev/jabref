@@ -28,9 +28,9 @@ import net.sf.jabref.logic.logging.ObservableMessages;
 public class TeeStream extends PrintStream {
 
     private final PrintStream outStream;
-    private final int priority;
+    private final MessagePriority priority;
 
-    public TeeStream(PrintStream out1, PrintStream out2, int priority) {
+    public TeeStream(PrintStream out1, PrintStream out2, MessagePriority priority) {
         super(out1);
         this.outStream = out2;
         this.priority = priority;
@@ -40,7 +40,7 @@ public class TeeStream extends PrintStream {
     public TeeStream(PrintStream out1, PrintStream out2) {
         super(out1);
         this.outStream = out2;
-        this.priority = 0;
+        this.priority = MessagePriority.LOW;
 
     }
 

@@ -2,14 +2,8 @@
 	-fx-padding: 5px;
 }
 
-.exception-active {
+.exception{
     -fx-text-fill: red;
-}
-
-.exception-inactive {
-    -fx-text-fill: green;
-    visibility: hidden;
-    display: none;
 }
 
 .log {

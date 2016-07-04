@@ -1,21 +1,27 @@
 package net.sf.jabref.logic.error;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class ObservableMessageWithPriority {
 
     private String message;
 
-    private int priority;
+    private MessagePriority priority;
 
-    public ObservableMessageWithPriority(String message, int priority) {
+    private BooleanProperty isFiltered = new SimpleBooleanProperty();
+
+    public ObservableMessageWithPriority(String message, MessagePriority priority) {
         this.message = message;
         this.priority = priority;
+        isFiltered.set(priority != MessagePriority.LOW);
     }
 
-    public int getPriority() {
+    public MessagePriority getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(MessagePriority priority) {
         this.priority = priority;
     }
 
@@ -25,5 +31,17 @@ public class ObservableMessageWithPriority {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean getIsFiltered() {
+        return isFiltered.get();
+    }
+
+    public void setIsFiltered(boolean isFiltered) {
+        this.isFiltered.set(isFiltered);
+    }
+
+    public BooleanProperty isFilteredProperty() {
+        return isFiltered;
     }
 }
