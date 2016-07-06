@@ -20,6 +20,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+
 import net.sf.jabref.Globals;
 import net.sf.jabref.JabRefException;
 import net.sf.jabref.JabRefGUI;
@@ -27,11 +34,6 @@ import net.sf.jabref.JabRefPreferences;
 import net.sf.jabref.gui.BasePanel;
 import net.sf.jabref.logic.journals.Abbreviation;
 
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
