@@ -1,11 +1,11 @@
 package net.sf.jabref.logic.logging;
 
-import net.sf.jabref.logic.error.ObservableMessageWithPriority;
-
 import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 
 /**
  * Created by motokito on 20.06.2016.
@@ -24,7 +24,4 @@ public enum ObservableMessages {
         messages.add(s);
     }
 
-//    public ArrayList <String> get (){
-//        return messages.get().toArray();
-//    }
 }

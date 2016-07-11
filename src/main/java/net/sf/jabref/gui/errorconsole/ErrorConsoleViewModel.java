@@ -17,14 +17,6 @@ package net.sf.jabref.gui.errorconsole;
 
 import java.io.IOException;
 
-import net.sf.jabref.JabRefGUI;
-import net.sf.jabref.gui.ClipBoardManager;
-import net.sf.jabref.logic.error.MessagePriority;
-import net.sf.jabref.logic.error.ObservableMessageWithPriority;
-import net.sf.jabref.logic.l10n.Localization;
-import net.sf.jabref.logic.logging.GuiAppender;
-import net.sf.jabref.logic.logging.ObservableMessages;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -37,6 +29,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
+import net.sf.jabref.JabRefGUI;
+import net.sf.jabref.gui.ClipBoardManager;
+import net.sf.jabref.logic.error.MessagePriority;
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
+import net.sf.jabref.logic.l10n.Localization;
+import net.sf.jabref.logic.logging.GuiAppender;
+import net.sf.jabref.logic.logging.ObservableMessages;
 
 public class ErrorConsoleViewModel {
 
@@ -57,17 +57,19 @@ public class ErrorConsoleViewModel {
     private void initialize() {
 
         ButtonBar.setButtonData(developerButton, ButtonBar.ButtonData.LEFT);
-
         ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
 
         /*
-        that is a ObservableList, which filter the showed message.
-        at first should it show only the Log Entries
-        HERE IT SHOWS NOW NOT CORRECTLY THE LIST ON LISTVIEW. NEED ONE TIPPS PLEASE !
+        That is a ObservableList, which filter the showed message.
+        At the begin it should show only the Log Entries
          */
         FilteredList<ObservableMessageWithPriority> filteredList = new FilteredList<>(masterData, t -> !t.isFilteredProperty().get());
         allMessage.setItems(filteredList);
 
+        /* binding the property of the developer button
+        if developer button disable, then it should show only entries of log (what in the begin happen)
+        if developer button enable, then it should show all entries
+        */
         developerInformation.bind(developerButton.selectedProperty());
         developerInformation.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -84,22 +86,25 @@ public class ErrorConsoleViewModel {
             public ListCell<ObservableMessageWithPriority> call(ListView<ObservableMessageWithPriority> listView) {
                 return new ListCell<ObservableMessageWithPriority>() {
                     @Override
-                    public void updateItem(ObservableMessageWithPriority om, boolean empty) {
-                        super.updateItem(om, empty);
-                        if (om != null) {
-                            setText(om.getMessage());
+                    public void updateItem(ObservableMessageWithPriority omp, boolean empty) {
+                        super.updateItem(omp, empty);
+                        if (omp != null) {
+                            setText(omp.getMessage());
                             getStyleClass().clear();
-                            if (om.getPriority() == MessagePriority.HIGH) {
+                            if (omp.getPriority() == MessagePriority.HIGH) {
                                 if (developerInformation.getValue()) {
                                     getStyleClass().add("exception");
                                 }
-                            } else if (om.getPriority() == MessagePriority.MEDIUM) {
-                                getStyleClass().add("output");
+                            } else if (omp.getPriority() == MessagePriority.MEDIUM) {
+                                if (developerInformation.getValue()) {
+                                    getStyleClass().add("output");
+                                }
                             } else {
                                 getStyleClass().add("log");
                             }
+                        } else {
+                            setText("");
                         }
-                        //allMessage.refresh();
                     }
                 };
             }
@@ -116,22 +121,26 @@ public class ErrorConsoleViewModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        allMessage.refresh();
+        //allMessage.refresh();
 
     }
 
-    // Handler for copy of Log Entry in the List by click of Copy Log Button
+    // handler for copy of Log Entry in the List by click of Copy Log Button
     @FXML
     private void copyLogErrorDialog() {
+        ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
+        masterData.forEach(message -> message.setIsFiltered(message.getPriority() != MessagePriority.LOW));
+        FilteredList<ObservableMessageWithPriority> filteredLowPriorityList = new FilteredList<>(masterData, t -> !t.isFilteredProperty().get());
         String logContentCopy = "";
-        for (String message : GuiAppender.CACHE.get()) {
-            logContentCopy += message + System.lineSeparator();
+
+        for (ObservableMessageWithPriority message : filteredLowPriorityList) {
+            logContentCopy += message.getMessage() + System.lineSeparator();
         }
         new ClipBoardManager().setClipboardContents(logContentCopy);
         JabRefGUI.getMainFrame().output(Localization.lang("Log is copied"));
     }
 
-    // Handler for close of error console
+    // handler for close of error console
     @FXML
     private void closeErrorDialog() {
         Stage stage = (Stage) closeButton.getScene().getWindow();

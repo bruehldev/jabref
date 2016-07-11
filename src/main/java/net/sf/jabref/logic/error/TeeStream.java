@@ -38,10 +38,7 @@ public class TeeStream extends PrintStream {
     }
 
     public TeeStream(PrintStream out1, PrintStream out2) {
-        super(out1);
-        this.outStream = out2;
-        this.priority = MessagePriority.LOW;
-
+        this(out1, out2, MessagePriority.LOW);
     }
 
     @Override
