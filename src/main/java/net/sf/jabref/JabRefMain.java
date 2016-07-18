@@ -23,7 +23,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
-import net.sf.jabref.bibtex.InternalBibtexFields;
 import net.sf.jabref.cli.ArgumentProcessor;
 import net.sf.jabref.gui.remote.JabRefMessageHandler;
 import net.sf.jabref.logic.CustomEntryTypesManager;

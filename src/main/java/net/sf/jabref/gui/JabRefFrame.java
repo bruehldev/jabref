@@ -69,8 +69,6 @@ import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import javafx.application.Platform;
-
 import net.sf.jabref.BibDatabaseContext;
 import net.sf.jabref.Globals;
 import net.sf.jabref.HighlightMatchingGroupPreferences;
@@ -101,18 +99,14 @@ import net.sf.jabref.gui.exporter.SaveDatabaseAction;
 import net.sf.jabref.gui.groups.EntryTableTransferHandler;
 import net.sf.jabref.gui.groups.GroupSelector;
 import net.sf.jabref.gui.help.AboutAction;
-import net.sf.jabref.gui.help.AboutDialog;
 import net.sf.jabref.gui.help.HelpAction;
 import net.sf.jabref.gui.help.HelpFile;
 import net.sf.jabref.gui.journals.ManageJournalsAction;
 import net.sf.jabref.gui.keyboard.KeyBinding;
-import net.sf.jabref.gui.keyboard.KeyBindingRepository;
-import net.sf.jabref.gui.keyboard.KeyBindingsDialog;
+import net.sf.jabref.gui.keyboard.KeyBindingAction;
 import net.sf.jabref.gui.menus.ChangeEntryTypeMenu;
 import net.sf.jabref.gui.menus.FileHistoryMenu;
 import net.sf.jabref.gui.menus.RightClickMenu;
-import net.sf.jabref.gui.menus.help.DonateAction;
-import net.sf.jabref.gui.menus.help.ForkMeOnGitHubAction;
 import net.sf.jabref.gui.openoffice.OpenOfficePanel;
 import net.sf.jabref.gui.preftabs.PreferencesDialog;
 import net.sf.jabref.gui.util.FocusRequester;
@@ -145,6 +139,7 @@ import net.sf.jabref.sql.importer.DbImportAction;
 
 import com.jgoodies.looks.HeaderStyle;
 import com.jgoodies.looks.Options;
+import javafx.application.Platform;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import osx.macadapter.MacAdapter;
@@ -215,15 +210,14 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
     private final AbstractAction newBibtexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBTEX);
     private final AbstractAction newBiblatexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBLATEX);
     private final AbstractAction newSubDatabaseAction = new NewSubDatabaseAction(this);
-    private final AbstractAction forkMeOnGitHubAction = new ForkMeOnGitHubAction();
-    private final AbstractAction donationAction = new DonateAction();
+    private final AbstractAction forkMeOnGitHubAction = new OpenBrowserAction("https://github.com/JabRef/jabref",
+            Localization.menuTitle("Fork me on GitHub"), Localization.lang("Opens JabRef's GitHub page"), IconTheme.JabRefIcon.GITHUB.getSmallIcon(), IconTheme.JabRefIcon.GITHUB.getIcon());
+    private final AbstractAction donationAction = new OpenBrowserAction("https://github.com/JabRef/jabref/wiki/Donations",
+            Localization.menuTitle("Donate to JabRef"), Localization.lang("Donate to JabRef"), IconTheme.JabRefIcon.DONATE.getSmallIcon(), IconTheme.JabRefIcon.DONATE.getIcon());
     private final AbstractAction help = new HelpAction(Localization.menuTitle("Online help"), Localization.lang("Online help"),
-            HelpFiles.CONTENTS, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
+            HelpFile.CONTENTS, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
     private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), Localization.lang("About JabRef"),
             IconTheme.getImage("about"));
-            HelpFile.CONTENTS, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
-    private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), aboutDiag,
-            Localization.lang("About JabRef"), IconTheme.getImage("about"));
     private final AbstractAction editEntry = new GeneralAction(Actions.EDIT, Localization.menuTitle("Edit entry"),
             Localization.lang("Edit entry"), Globals.getKeyPrefs().getKey(KeyBinding.EDIT_ENTRY), IconTheme.JabRefIcon.EDIT_ENTRY.getIcon());
     private final AbstractAction focusTable = new GeneralAction(Actions.FOCUS_TABLE,
