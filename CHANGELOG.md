@@ -114,6 +114,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Added support for several Biblatex-fields through drop-down lists with valid alternatives
 - Added integrity checker for an odd number of unescaped '#'
 - Implemented [feature request 384](https://sourceforge.net/p/jabref/features/384): The merge entries dialog now show all text and colored differences between the fields
+- Partly switched to new UI technology (JavaFX). Redesigned about dialog.
 - Implemented [#1233](https://github.com/JabRef/jabref/issues/1233): Group side pane now takes up all the remaining space
 - Added integrity check detecting HTML-encoded characters
 - Added missing help files
@@ -122,10 +123,12 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Add LaTeX to Unicode converter as cleanup operation
 - Added an option in the about dialog to easily copy the version information of JabRef
 - Integrity check table can be sorted by clicking on column headings
+- Add tab which shows the MathSciNet review website if the `MRNumber` field is present.
+- Partly switched to new UI technology (JavaFX). Redesigned key bindings dialog.
 - Added \SOFTWARE\Jabref 'Path' registry entry for installation path inside the installer
 - Added an additional icon to distinguish DOI and URL links ([feature request #696](https://github.com/JabRef/jabref/issues/696))
 - Added nbib fields to Medlineplain importer
-- Implemented [#1342](https://github.com/JabRef/jabref/issues/1342): show description of case converters as tooltip 
+- Implemented [#1342](https://github.com/JabRef/jabref/issues/1342): show description of case converters as tooltip
 - Updated German translation
 
 ### Fixed

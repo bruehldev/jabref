@@ -69,6 +69,8 @@ import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import javafx.application.Platform;
+
 import net.sf.jabref.BibDatabaseContext;
 import net.sf.jabref.Globals;
 import net.sf.jabref.HighlightMatchingGroupPreferences;
@@ -109,6 +111,8 @@ import net.sf.jabref.gui.keyboard.KeyBindingsDialog;
 import net.sf.jabref.gui.menus.ChangeEntryTypeMenu;
 import net.sf.jabref.gui.menus.FileHistoryMenu;
 import net.sf.jabref.gui.menus.RightClickMenu;
+import net.sf.jabref.gui.menus.help.DonateAction;
+import net.sf.jabref.gui.menus.help.ForkMeOnGitHubAction;
 import net.sf.jabref.gui.openoffice.OpenOfficePanel;
 import net.sf.jabref.gui.preftabs.PreferencesDialog;
 import net.sf.jabref.gui.util.FocusRequester;
@@ -189,8 +193,6 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
 
     private final FileHistoryMenu fileHistory = new FileHistoryMenu(prefs, this);
 
-    // The help window.
-    private final AboutDialog aboutDiag = new AboutDialog(this);
 
     // Here we instantiate menu/toolbar actions. Actions regarding
     // the currently open database are defined as a GeneralAction
@@ -209,17 +211,16 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
     private final OpenDatabaseAction open = new OpenDatabaseAction(this, true);
     private final EditModeAction editModeAction = new EditModeAction();
     private final AbstractAction quit = new CloseAction();
-    private final AbstractAction selectKeys = new SelectKeysAction();
+    private final AbstractAction keyBindingAction = new KeyBindingAction();
     private final AbstractAction newBibtexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBTEX);
     private final AbstractAction newBiblatexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBLATEX);
     private final AbstractAction newSubDatabaseAction = new NewSubDatabaseAction(this);
-    private final AbstractAction forkMeOnGitHubAction = new OpenBrowserAction("https://github.com/JabRef/jabref",
-            Localization.menuTitle("Fork me on GitHub"), Localization.lang("Opens JabRef's GitHub page"), IconTheme.JabRefIcon.GITHUB.getSmallIcon(), IconTheme.JabRefIcon.GITHUB.getIcon());
-    private final AbstractAction donationAction = new OpenBrowserAction("https://github.com/JabRef/jabref/wiki/Donations",
-            Localization.menuTitle("Donate to JabRef"), Localization.lang("Donate to JabRef"), IconTheme.JabRefIcon.DONATE.getSmallIcon(), IconTheme.JabRefIcon.DONATE.getIcon());
-    private final AbstractAction openForumAction = new OpenBrowserAction("http://discourse.jabref.org/",
-            Localization.menuTitle("Online help forum"), Localization.lang("Online help forum"), IconTheme.JabRefIcon.FORUM.getSmallIcon(), IconTheme.JabRefIcon.FORUM.getIcon());
+    private final AbstractAction forkMeOnGitHubAction = new ForkMeOnGitHubAction();
+    private final AbstractAction donationAction = new DonateAction();
     private final AbstractAction help = new HelpAction(Localization.menuTitle("Online help"), Localization.lang("Online help"),
+            HelpFiles.CONTENTS, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
+    private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), Localization.lang("About JabRef"),
+            IconTheme.getImage("about"));
             HelpFile.CONTENTS, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
     private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), aboutDiag,
             Localization.lang("About JabRef"), IconTheme.getImage("about"));
@@ -1345,11 +1346,10 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         options.add(customFileTypesAction);
         options.add(manageJournals);
         options.add(manageSelectors);
-        options.add(selectKeys);
+        options.add(keyBindingAction);
         mb.add(options);
 
         helpMenu.add(help);
-        helpMenu.add(openForumAction);
         helpMenu.addSeparator();
         helpMenu.add(errorConsole);
         helpMenu.addSeparator();
@@ -1666,23 +1666,6 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         }
     }
 
-    private class SelectKeysAction extends AbstractAction {
-
-        public SelectKeysAction() {
-            super(Localization.lang("Customize key bindings"));
-            this.putValue(Action.SMALL_ICON, IconTheme.JabRefIcon.KEY_BINDINGS.getSmallIcon());
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            KeyBindingsDialog d = new KeyBindingsDialog(new KeyBindingRepository(Globals.getKeyPrefs().getKeyBindings()));
-            d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            d.pack(); //setSize(300,500);
-            d.setLocationRelativeTo(JabRefFrame.this);
-            d.setVisible(true);
-        }
-    }
-
     /**
      * The action concerned with closing the window.
      */
@@ -1697,6 +1680,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         @Override
         public void actionPerformed(ActionEvent e) {
             quit();
+            Platform.exit();
         }
     }
 
