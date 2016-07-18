@@ -37,6 +37,13 @@ import net.sf.jabref.logic.journals.Abbreviation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * This class provides a model for managing journal abbreviation lists.
+ * It provides all necessary methods to create, modify or delete journal
+ * abbreviations and files. To visualize the model one can bind the properties
+ * to ui elements.
+ *
+ */
 public class ManageJournalAbbreviationsViewModel {
 
     private final Log logger = LogFactory.getLog(ManageJournalAbbreviationsViewModel.class);
