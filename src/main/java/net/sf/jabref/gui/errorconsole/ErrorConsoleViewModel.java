@@ -15,6 +15,11 @@
 */
 package net.sf.jabref.gui.errorconsole;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -31,10 +36,15 @@ import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.logging.ObservableMessages;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class ErrorConsoleViewModel {
 
-
     private BooleanProperty developerInformation = new SimpleBooleanProperty();
+
+    private final Log logger = LogFactory.getLog(ErrorConsoleViewModel.class);
+    private final String firstPartIssueLink = "https://github.com/JabRef/jabref/issues/new";
 
     /**
      * Create allMessage ListView, which shows the filtered entries (default at first only the Log entries),
@@ -107,8 +117,80 @@ public class ErrorConsoleViewModel {
 
 
     // handler for create Issues on GitHub by click of Create Issue Button
-    public void createIssue() {
-        //TODO: Implement handler for the Create Issues Button on Click
-    }
+    public void createIssue(String title, String description) {
+//        try {
+//            String issueTitleTEST = ("&title=" + URLEncoder.encode(title, "UTF-8"));
+//            byte[] postData = issueTitleTEST.getBytes(StandardCharsets.UTF_8);
+//            int postDataLength = postData.length;
+//            URL url = new URL(firstPartIssueLink);
+//            HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+//
+//            con.setDoOutput( true );
+//            con.setInstanceFollowRedirects( false );
+//
+//            con.setRequestMethod("GET");
+//            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            con.setRequestProperty("charset", "utf-8");
+//            con.setRequestProperty("Content-length", Integer.toString( postDataLength ));
+//            con.setUseCaches(false);
+//
+//            DataOutputStream writer = new DataOutputStream(con.getOutputStream());
+//            writer.write(postData);
+//            writer.flush();
+//            writer.close();
+//
+//
+//            int responseCode = con.getResponseCode();
+//            System.out.println("\nSending 'POST' request to URL : " + firstPartIssueLink);
+//            System.out.println("Post parameters : " + postData.toString());
+//            System.out.println("Response Code : " + responseCode);
+//
+//            BufferedReader in = new BufferedReader(
+//                    new InputStreamReader(con.getInputStream()));
+//            String inputLine;
+//            StringBuffer response = new StringBuffer();
+//
+//            while ((inputLine = in.readLine()) != null) {
+//                response.append(inputLine);
+//            }
+//            in.close();
+//
+//            //print result
+//            System.out.println(response.toString());
+//
+//
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
+
+        ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
+
+        String listViewContentCopy = "";
+        for (ObservableMessageWithPriority message : masterData) {
+            listViewContentCopy += message.getMessage() + "\n";
+        }
+
+        String issueDetails = ("<details>\n" + "<summary>" + "Details Info:" + "</summary>\n```\n" + listViewContentCopy + "\n```\n</details>");
+
+        try {
+            String issueTitle = ("?title=" + URLEncoder.encode(title, "UTF-8"));
+            String issueDescription = ("&body=" + URLEncoder.encode(description, "UTF-8"));
+            String issueDetailsEncoded = URLEncoder.encode(issueDetails, "UTF-8");
+            String link = firstPartIssueLink + issueTitle + issueDescription + issueDetailsEncoded;
+
+            java.awt.Desktop.getDesktop().browse(new URI(link));
+
+//            JabRefDesktop.openBrowser(link);
+//            JabRefDesktop.openBrowser(firstPartIssueLink + issueTitle + issueDescription);
+        } catch (IOException e) {
+            JabRefGUI.getMainFrame().output(Localization.lang("Error") + ": " + e.getLocalizedMessage());
+            logger.debug("Could not open default browser.", e);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
