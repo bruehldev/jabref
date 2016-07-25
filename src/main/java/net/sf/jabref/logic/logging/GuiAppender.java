@@ -23,8 +23,8 @@ public class GuiAppender extends AbstractAppender {
 
     @PluginFactory
     public static GuiAppender createAppender(@PluginAttribute("name") String name,
-            @PluginElement("Layout") Layout<?> layout,
-            @PluginElement("Filters") Filter filter) {
+                                             @PluginElement("Layout") Layout<?> layout,
+                                             @PluginElement("Filters") Filter filter) {
 
         if (name == null) {
             LOGGER.error("No name provided for GuiAppender");
@@ -41,6 +41,7 @@ public class GuiAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         CACHE.add(new String(this.getLayout().toByteArray(event)));
-    }
 
+    }
 }
+

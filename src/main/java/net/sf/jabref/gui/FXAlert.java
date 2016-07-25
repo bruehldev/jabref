@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import net.sf.jabref.Globals;
@@ -40,7 +41,6 @@ import net.sf.jabref.gui.keyboard.KeyBindingPreferences;
  * pane through the inherited {@link setDialogPane(DialogPane)} method in the constructor.
  * The layout of the pane should be define in an external fxml file and loaded it via the
  * {@link FXMLLoader}.
- *
  */
 public class FXAlert extends Alert {
 
@@ -48,7 +48,6 @@ public class FXAlert extends Alert {
      * The WindowAdapter will be added to all swing windows once an instance
      * of this class is shown and redirects the focus towards this instance.
      * It will be removed once the instance of this class gets hidden.
-     *
      */
     private final WindowAdapter fxOverSwingHelper = new WindowAdapter() {
 
@@ -71,26 +70,29 @@ public class FXAlert extends Alert {
         }
     };
 
-
-    public FXAlert(AlertType type, String title, Image image) {
-        this(type, title);
+    public FXAlert(AlertType type, String title, Image image, boolean isModal) {
+        this(type, title, isModal);
         setDialogIcon(image);
     }
 
-    public FXAlert(AlertType type, String title) {
-        this(type);
+    public FXAlert(AlertType type, String title, boolean isModal) {
+        this(type, isModal);
         setTitle(title);
     }
 
-    public FXAlert(AlertType type) {
+    public FXAlert(AlertType type, boolean isModal) {
         super(type);
         Stage fxDialogWindow = getDialogWindow();
-
+        fxDialogWindow.setOnCloseRequest(evt -> this.close());
+        if (isModal) {
+            initModality(Modality.APPLICATION_MODAL);
+        } else {
+            initModality(Modality.NONE);
+        }
         fxDialogWindow.setOnShown(evt -> {
-            setSwingWindowsEnabledAndFocusable(false);
+            setSwingWindowsEnabledAndFocusable(!isModal);
             setLocationRelativeToMainWindow();
         });
-
         fxDialogWindow.setOnHiding(evt -> setSwingWindowsEnabledAndFocusable(true));
 
         fxDialogWindow.setOnCloseRequest(evt -> this.close());

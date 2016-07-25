@@ -18,6 +18,9 @@ package net.sf.jabref.logic.logging;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import net.sf.jabref.logic.error.MessagePriority;
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
+
 /**
  * Enables caching of messages
  */
@@ -38,10 +41,10 @@ public class Cache {
         this.capacity = capacity;
     }
 
-    public synchronized String get() {
+   /* public synchronized String get() {
         ensureCacheIsFresh();
         return cache;
-    }
+    }*/
 
     private void ensureCacheIsFresh() {
         if (cacheRefreshNeeded) {
@@ -51,6 +54,9 @@ public class Cache {
 
     public synchronized void add(String message) {
         queue.add(message);
+        ObservableMessageWithPriority messageWithPriority = new ObservableMessageWithPriority(message.replaceAll(System.lineSeparator(), ""), MessagePriority.LOW);
+        ObservableMessages.INSTANCE.add(messageWithPriority);
+
 
         if (isCapacityExceeded()) {
             // if we reached capacity, we switch to the "real" caching method and remove old lines
@@ -74,4 +80,10 @@ public class Cache {
     private boolean isCapacityExceeded() {
         return queue.size() > capacity;
     }
+
+
+    public Queue<String> get() {
+        return queue;
+    }
 }
+
