@@ -15,19 +15,13 @@
 */
 package net.sf.jabref.gui.errorconsole;
 
-import java.io.IOException;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import net.sf.jabref.JabRefGUI;
@@ -35,41 +29,27 @@ import net.sf.jabref.gui.ClipBoardManager;
 import net.sf.jabref.logic.error.MessagePriority;
 import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 import net.sf.jabref.logic.l10n.Localization;
-import net.sf.jabref.logic.logging.GuiAppender;
 import net.sf.jabref.logic.logging.ObservableMessages;
 
 public class ErrorConsoleViewModel {
 
-    @FXML
-    private Button closeButton;
-    @FXML
-    private Button copyLogButton;
-    @FXML
-    private Button testOutput;
-    @FXML
-    private ToggleButton developerButton;
-    @FXML
-    private ListView<ObservableMessageWithPriority> allMessage;
 
     private BooleanProperty developerInformation = new SimpleBooleanProperty();
 
-    @FXML
-    private void initialize() {
+    /**
+     * Create allMessage ListView, which shows the filtered entries (default at first only the Log entries),
+     * when the ToggleButton "developerButton" is disable.
+     * If ToggleButton "developerButton" is enable, then it should show all entries
+     * @param allMessage
+     * @param developerButton (default is disable at start)
+     */
 
-        ButtonBar.setButtonData(developerButton, ButtonBar.ButtonData.LEFT);
+    public void setUpListView(ListView allMessage, ToggleButton developerButton) {
         ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
 
-        /*
-        That is a ObservableList, which filter the showed message.
-        At the begin it should show only the Log Entries
-         */
         FilteredList<ObservableMessageWithPriority> filteredList = new FilteredList<>(masterData, t -> !t.isFilteredProperty().get());
         allMessage.setItems(filteredList);
 
-        /* binding the property of the developer button
-        if developer button disable, then it should show only entries of log (what in the begin happen)
-        if developer button enable, then it should show all entries
-        */
         developerInformation.bind(developerButton.selectedProperty());
         developerInformation.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -111,23 +91,8 @@ public class ErrorConsoleViewModel {
         });
     }
 
-    //  TEST BUTTON TO TEST THE ENTRIES
-    @FXML
-    private void testOutputOnClicked() {
-        GuiAppender.CACHE.add("Test CACHE");
-        System.out.println("TESTING");
-        try {
-            throw new IOException();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //allMessage.refresh();
-
-    }
-
     // handler for copy of Log Entry in the List by click of Copy Log Button
-    @FXML
-    private void copyLogErrorDialog() {
+    public void copyLog() {
         ObservableList<ObservableMessageWithPriority> masterData = ObservableMessages.INSTANCE.messagesPropety();
         masterData.forEach(message -> message.setIsFiltered(message.getPriority() != MessagePriority.LOW));
         FilteredList<ObservableMessageWithPriority> filteredLowPriorityList = new FilteredList<>(masterData, t -> !t.isFilteredProperty().get());
@@ -140,11 +105,10 @@ public class ErrorConsoleViewModel {
         JabRefGUI.getMainFrame().output(Localization.lang("Log is copied"));
     }
 
-    // handler for close of error console
-    @FXML
-    private void closeErrorDialog() {
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+
+    // handler for create Issues on GitHub by click of Create Issue Button
+    public void createIssue() {
+        //TODO: Implement handler for the Create Issues Button on Click
     }
 
 }

@@ -15,16 +15,36 @@
 */
 package net.sf.jabref.gui.errorconsole;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
+import javafx.stage.Stage;
+
 import net.sf.jabref.gui.FXAlert;
+import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 import net.sf.jabref.logic.l10n.Localization;
 
 import com.airhacks.afterburner.views.FXMLView;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
 
 public class ErrorConsoleView extends FXMLView {
 
+    private final ErrorConsoleViewModel errorViewModel = new ErrorConsoleViewModel();
+
+    @FXML
+    private Button closeButton;
+    @FXML
+    private Button copyLogButton;
+    @FXML
+    private Button createIssueButton;
+    @FXML
+    private ToggleButton developerButton;
+    @FXML
+    private ListView<ObservableMessageWithPriority> allMessage;
 
     public ErrorConsoleView() {
         super();
@@ -45,6 +65,30 @@ public class ErrorConsoleView extends FXMLView {
         errorConsole.setResizable(true);
 
         errorConsole.show();
+    }
 
+    @FXML
+    private void initialize() {
+
+        ButtonBar.setButtonData(developerButton, ButtonBar.ButtonData.LEFT);
+        ButtonBar.setButtonData(createIssueButton, ButtonBar.ButtonData.LEFT);
+        errorViewModel.setUpListView(allMessage, developerButton);
+    }
+
+    @FXML
+    private void copyLogButton() {
+        errorViewModel.copyLog();
+    }
+
+    @FXML
+    private void createIssueButton() {
+        errorViewModel.createIssue();
+    }
+
+    // handler for close of error console
+    @FXML
+    private void closeErrorDialog() {
+        Stage stage = (Stage) closeButton.getScene().getWindow();
+        stage.close();
     }
 }
