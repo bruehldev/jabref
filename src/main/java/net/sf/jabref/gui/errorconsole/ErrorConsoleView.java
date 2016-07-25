@@ -15,17 +15,25 @@
 */
 package net.sf.jabref.gui.errorconsole;
 
+import java.util.Optional;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 import net.sf.jabref.gui.FXAlert;
+import net.sf.jabref.gui.FXDialogs;
 import net.sf.jabref.logic.error.ObservableMessageWithPriority;
 import net.sf.jabref.logic.l10n.Localization;
 
@@ -82,7 +90,25 @@ public class ErrorConsoleView extends FXMLView {
 
     @FXML
     private void createIssueButton() {
-        errorViewModel.createIssue();
+
+        GridPane content = createDialogContent("", "");
+
+        DialogPane pane = new DialogPane();
+        pane.setContent(content);
+        pane.setMinWidth(500);
+        pane.setMinHeight(300);
+
+
+        Optional<ButtonType> result = FXDialogs.showCustomDialogAndWait("Create Issue", pane, ButtonType.OK, ButtonType.CANCEL);
+        result.ifPresent((response -> {
+            if (response == ButtonType.OK) {
+
+                String titleTextfield = ((TextField) content.getChildren().get(0)).getText();
+                String descriptionTextArea = ((TextArea) content.getChildren().get(1)).getText();
+
+                errorViewModel.createIssue(titleTextfield, descriptionTextArea);
+            }
+        }));
     }
 
     // handler for close of error console
@@ -90,5 +116,31 @@ public class ErrorConsoleView extends FXMLView {
     private void closeErrorDialog() {
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
+    }
+
+    private GridPane createDialogContent(String title, String descriptions) {
+        TextArea descriptionField = new TextArea(descriptions);
+        descriptionField.setPromptText("Error Description");
+
+        TextField titleField = new TextField(title);
+        titleField.setPromptText("Title");
+        titleField.requestFocus();
+
+        titleField.setMaxWidth(Double.MAX_VALUE);
+        titleField.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(titleField, Priority.ALWAYS);
+        GridPane.setHgrow(titleField, Priority.ALWAYS);
+
+        descriptionField.setMaxWidth(Double.MAX_VALUE);
+        descriptionField.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(descriptionField, Priority.ALWAYS);
+        GridPane.setHgrow(descriptionField, Priority.ALWAYS);
+
+        GridPane content = new GridPane();
+        content.setVgap(5);
+        content.setMaxWidth(Double.MAX_VALUE);
+        content.add(titleField, 0, 0);
+        content.add(descriptionField, 0, 1);
+        return content;
     }
 }
