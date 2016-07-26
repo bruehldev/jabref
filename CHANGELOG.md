@@ -75,6 +75,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Integrity check table can be sorted by clicking on column headings
 - Add tab which shows the MathSciNet review website if the `MRNumber` field is present.
 - Partly switched to new UI technology (JavaFX). Redesigned key bindings dialog.
+- Partly switched to new UI technology (JavaFX). Redesigned journal abbreviations dialog.
 - Partly switched to new UI technology (JavaFX). Redesigned error console.
 - Added \SOFTWARE\Jabref 'Path' registry entry for installation path inside the installer
 - Added an additional icon to distinguish DOI and URL links ([feature request #696](https://github.com/JabRef/jabref/issues/696))
