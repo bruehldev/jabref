@@ -63,7 +63,7 @@
 					BorderPane.alignment="CENTER">
 					<buttons>
 						<Button mnemonicParsing="false" onAction="#copyVersionToClipboard"
-								text="%Copy_Version"/>
+								text="%Copy Version"/>
 						<Button fx:id="closeButton" cancelButton="true"
 							defaultButton="true" layoutX="664.0" layoutY="14.0"
 							mnemonicParsing="false" onAction="#closeAboutDialog" text="%Close" />
