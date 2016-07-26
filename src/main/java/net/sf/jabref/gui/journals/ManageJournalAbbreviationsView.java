@@ -221,7 +221,7 @@ public class ManageJournalAbbreviationsView extends FXMLView {
 
     public void showAndWait() {
         FXAlert journalAbbreviationsDialog = new FXAlert(AlertType.INFORMATION,
-                Localization.lang("Journal abbreviations"));
+                Localization.lang("Journal abbreviations"), true );
         journalAbbreviationsDialog.setResizable(true);
         journalAbbreviationsDialog.setDialogPane((DialogPane) this.getView());
         ((Stage) this.getView().getScene().getWindow()).setMinHeight(400);

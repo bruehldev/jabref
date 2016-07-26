@@ -274,9 +274,9 @@ public class ManageJournalAbbreviationsViewModel {
     public void updateAbbreviationsAutoComplete() {
         // Update the autocompleter for the "journal" field in all base panels,
         // so added journal names are available:
-        for (BasePanel basePanel : JabRefGUI.getMainFrame().getBasePanelList()) {
-            basePanel.getAutoCompleters().addJournalListToAutoCompleter();
-        }
+//        for (BasePanel basePanel : JabRefGUI.getMainFrame().getBasePanelList()) {
+ //           basePanel.getAutoCompleters().addJournalListToAutoCompleter();
+   //     }
     }
 
     public SimpleListProperty<AbbreviationsFile> journalFilesProperty() {
