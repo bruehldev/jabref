@@ -16,9 +16,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 
-import net.sf.jabref.JabRefPreferences;
 import net.sf.jabref.logic.util.OS;
 import net.sf.jabref.preferences.JabRefPreferences;
+import net.sf.jabref.logic.util.OS;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
