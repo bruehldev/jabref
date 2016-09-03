@@ -92,7 +92,6 @@ import net.sf.jabref.logic.importer.ParserResult;
 import net.sf.jabref.logic.importer.fileformat.BibtexParser;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.search.SearchQueryHighlightListener;
-import net.sf.jabref.logic.util.date.TimeStamp;
 import net.sf.jabref.logic.util.strings.StringUtil;
 import net.sf.jabref.logic.util.UpdateField;
 import net.sf.jabref.logic.util.date.EasyDateFormat;
@@ -335,7 +334,7 @@ public class EntryEditor extends JPanel implements EntryContainer {
 
         // MathSciNet Review
         if(entry.hasField("MRNumber")) {
-            String mrNumberRaw = entry.getField("MRNumber");
+            String mrNumberRaw = entry.getField("MRNumber").toString();
             // Take everything before whitespace or open bracket, so something like `619693 (82j:58046)` gets parsed correctly
             String mrNumber = StringUtil.tokenizeToList(mrNumberRaw, " (").get(0);
 
