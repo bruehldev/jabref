@@ -18,6 +18,10 @@ public class Localization {
 
     private static ResourceBundle messages;
     private static ResourceBundle menuTitles;
+    
+    public static ResourceBundle getMessages() {
+        return new LocalizationBundle(messages);
+    }
 
     public static void setLanguage(String language) {
         Optional<Locale> knownLanguage = Languages.convertToSupportedLocale(language);
@@ -54,7 +58,7 @@ public class Localization {
      * @param params            a list of Strings to replace %0, %1, ...
      * @return
      */
-    private static String translate(ResourceBundle resBundle, String idForErrorMessage, String key, String... params) {
+    protected static String translate(ResourceBundle resBundle, String idForErrorMessage, String key, String... params) {
         Objects.requireNonNull(resBundle);
 
         String translation = null;

@@ -11,6 +11,15 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 
 ## [Unreleased]
 
+## JavaFX Changes
+(to be moved to `##Changed` as soon as JavaFX is integrated in the main branch)
+- Add tab which shows the MathSciNet review website if the `MRNumber` field is present.
+- Partly switched to new UI technology (JavaFX).
+    - Redesigned about dialog.
+    - Redesigned key bindings dialog.
+    - Redesigned journal abbreviations dialog.
+
+
 ### Changed
 - Added integrity check for fields with BibTeX keys, e.g., `crossref` and `related`, to check that the key exists
 - [#1496](https://github.com/JabRef/jabref/issues/1496) Keep track of which entry a downloaded file belongs to
@@ -248,11 +257,6 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - Add LaTeX to Unicode converter as cleanup operation
 - Added an option in the about dialog to easily copy the version information of JabRef
 - Integrity check table can be sorted by clicking on column headings
-- Added \SOFTWARE\Jabref 'Path' registry entry for installation path inside the installer
-- Added an additional icon to distinguish DOI and URL links ([feature request #696](https://github.com/JabRef/jabref/issues/696))
-- Added nbib fields to Medlineplain importer and to MedlineImporter
-- Implemented [#1342](https://github.com/JabRef/jabref/issues/1342): show description of case converters as tooltip 
-- Updated German translation
 
 ### Fixed
 - Fixed [#473](https://github.com/JabRef/jabref/issues/473): Values in an entry containing symbols like ' are now properly escaped for exporting to the database

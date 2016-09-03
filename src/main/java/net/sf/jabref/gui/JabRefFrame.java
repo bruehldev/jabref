@@ -56,6 +56,8 @@ import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import javafx.application.Platform;
+
 import net.sf.jabref.BibDatabaseContext;
 import net.sf.jabref.Globals;
 import net.sf.jabref.JabRefExecutorService;
@@ -92,8 +94,7 @@ import net.sf.jabref.gui.importer.actions.OpenDatabaseAction;
 import net.sf.jabref.gui.importer.fetcher.GeneralFetcher;
 import net.sf.jabref.gui.journals.ManageJournalsAction;
 import net.sf.jabref.gui.keyboard.KeyBinding;
-import net.sf.jabref.gui.keyboard.KeyBindingRepository;
-import net.sf.jabref.gui.keyboard.KeyBindingsDialog;
+import net.sf.jabref.gui.keyboard.KeyBindingAction;
 import net.sf.jabref.gui.menus.ChangeEntryTypeMenu;
 import net.sf.jabref.gui.menus.FileHistoryMenu;
 import net.sf.jabref.gui.menus.RightClickMenu;
@@ -179,6 +180,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
 
     private final FileHistoryMenu fileHistory = new FileHistoryMenu(prefs, this);
 
+
     // Here we instantiate menu/toolbar actions. Actions regarding
     // the currently open database are defined as a GeneralAction
     // with a unique command string. This causes the appropriate
@@ -196,7 +198,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
     private final OpenDatabaseAction open = new OpenDatabaseAction(this, true);
     private final EditModeAction editModeAction = new EditModeAction();
     private final AbstractAction quit = new CloseAction();
-    private final AbstractAction selectKeys = new SelectKeysAction();
+    private final AbstractAction keyBindingAction = new KeyBindingAction();
     private final AbstractAction newBibtexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBTEX);
     private final AbstractAction newBiblatexDatabaseAction = new NewDatabaseAction(this, BibDatabaseMode.BIBLATEX);
     private final AbstractAction openSharedDatabaseAction = new OpenSharedDatabaseAction(this);
@@ -224,8 +226,8 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
             Localization.menuTitle("Online help forum"), Localization.lang("Online help forum"), IconTheme.JabRefIcon.FORUM.getSmallIcon(), IconTheme.JabRefIcon.FORUM.getIcon());
     private final AbstractAction help = new HelpAction(Localization.menuTitle("Online help"), Localization.lang("Online help"),
             HelpFile.CONTENTS, Globals.getKeyPrefs().getKey(KeyBinding.HELP));
-    private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), this,
-            Localization.lang("About JabRef"), IconTheme.getImage("about"));
+    private final AbstractAction about = new AboutAction(Localization.menuTitle("About JabRef"), Localization.lang("About JabRef"),
+            IconTheme.getImage("about"));
     private final AbstractAction editEntry = new GeneralAction(Actions.EDIT, Localization.menuTitle("Edit entry"),
             Localization.lang("Edit entry"), Globals.getKeyPrefs().getKey(KeyBinding.EDIT_ENTRY), IconTheme.JabRefIcon.EDIT_ENTRY.getIcon());
     private final AbstractAction focusTable = new GeneralAction(Actions.FOCUS_TABLE,
@@ -421,7 +423,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
             Localization.menuTitle("Unabbreviate journal names"),
             Localization.lang("Unabbreviate journal names of the selected entries"),
             Globals.getKeyPrefs().getKey(KeyBinding.UNABBREVIATE));
-    private final AbstractAction manageJournals = new ManageJournalsAction(this);
+    private final AbstractAction manageJournals = new ManageJournalsAction();
     private final AbstractAction databaseProperties = new DatabasePropertiesAction();
     private final AbstractAction bibtexKeyPattern = new BibtexKeyPatternAction();
     private final AbstractAction errorConsole = new ErrorConsoleAction(this, Globals.getStreamEavesdropper(), GuiAppender.CACHE);
@@ -1337,8 +1339,8 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         options.add(customFileTypesAction);
         options.add(manageJournals);
         options.add(manageSelectors);
+        options.add(keyBindingAction);
         options.add(protectTerms);
-        options.add(selectKeys);
         mb.add(options);
 
         helpMenu.add(help);
@@ -1689,23 +1691,6 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         }
     }
 
-    private class SelectKeysAction extends AbstractAction {
-
-        public SelectKeysAction() {
-            super(Localization.lang("Customize key bindings"));
-            this.putValue(Action.SMALL_ICON, IconTheme.JabRefIcon.KEY_BINDINGS.getSmallIcon());
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            KeyBindingsDialog d = new KeyBindingsDialog(new KeyBindingRepository(Globals.getKeyPrefs().getKeyBindings()));
-            d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            d.pack(); //setSize(300,500);
-            d.setLocationRelativeTo(JabRefFrame.this);
-            d.setVisible(true);
-        }
-    }
-
     /**
      * The action concerned with closing the window.
      */
@@ -1720,6 +1705,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         @Override
         public void actionPerformed(ActionEvent e) {
             quit();
+            Platform.exit();
         }
     }
 

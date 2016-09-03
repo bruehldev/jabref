@@ -1,3 +1,4 @@
+
 package net.sf.jabref.gui.journals;
 
 import java.awt.BorderLayout;

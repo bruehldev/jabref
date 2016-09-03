@@ -49,6 +49,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebView;
+
 import net.sf.jabref.Globals;
 import net.sf.jabref.external.WriteXMPEntryEditorAction;
 import net.sf.jabref.gui.BasePanel;
@@ -85,6 +92,8 @@ import net.sf.jabref.logic.importer.ParserResult;
 import net.sf.jabref.logic.importer.fileformat.BibtexParser;
 import net.sf.jabref.logic.l10n.Localization;
 import net.sf.jabref.logic.search.SearchQueryHighlightListener;
+import net.sf.jabref.logic.util.date.TimeStamp;
+import net.sf.jabref.logic.util.strings.StringUtil;
 import net.sf.jabref.logic.util.UpdateField;
 import net.sf.jabref.logic.util.date.EasyDateFormat;
 import net.sf.jabref.model.EntryTypes;
@@ -303,6 +312,8 @@ public class EntryEditor extends JPanel implements EntryContainer {
 
         // general fields from preferences
         addGeneralTabs();
+        // special tabs (like MathSciNet Reviews)
+        addSpecialTabs();
         // source tab
         addSourceTab();
     }
@@ -317,6 +328,44 @@ public class EntryEditor extends JPanel implements EntryContainer {
             }
             tabbed.addTab(tabList.getTabName(i), newTab.getPane());
             tabs.add(newTab);
+        }
+    }
+
+    private void addSpecialTabs() {
+
+        // MathSciNet Review
+        if(entry.hasField("MRNumber")) {
+            String mrNumberRaw = entry.getField("MRNumber");
+            // Take everything before whitespace or open bracket, so something like `619693 (82j:58046)` gets parsed correctly
+            String mrNumber = StringUtil.tokenizeToList(mrNumberRaw, " (").get(0);
+
+            JFXPanel reviewPane = new JFXPanel();
+            tabbed.addTab(Localization.lang("MathSciNet Review"), reviewPane);
+            tabs.add(reviewPane);
+
+            // Execute on JavaFX Application Thread
+            Platform.runLater(() -> {
+                StackPane root = new StackPane();
+                ProgressIndicator progress = new ProgressIndicator();
+                progress.setMaxSize(100, 100);
+                WebView browser = new WebView();
+
+                // Quick hack to disable navigating
+                browser.addEventFilter(javafx.scene.input.MouseEvent.ANY, javafx.scene.input.MouseEvent::consume);
+                browser.setContextMenuEnabled(false);
+
+                root.getChildren().addAll(browser, progress);
+                reviewPane.setScene(new Scene(root));
+
+                browser.getEngine().load("http://www.ams.org/mathscinet-getitem?mr=" + mrNumber);
+
+                // Hide progress indicator if finished (over 70% loaded)
+                browser.getEngine().getLoadWorker().progressProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue.doubleValue() >= 0.7) {
+                        progress.setVisible(false);
+                    }
+                });
+            });
         }
     }
 
